@@ -130,7 +130,8 @@ function limitesY(item, vals) {
     if (m > lo - amp * 1.5 && m < hi + amp * 1.5) { lo = Math.min(lo, m); hi = Math.max(hi, m); }
   }
   const folga = (hi - lo) * 0.1 || 1;
-  return { min: lo - folga, max: hi + folga };
+  // sugestão, não limite fixo: deixa o Chart.js arredondar para valores legíveis no eixo
+  return { suggestedMin: lo - folga, suggestedMax: hi + folga };
 }
 
 const eixoX = (dias, s) => ({
@@ -147,6 +148,8 @@ function graficoIndicador(canvas, item) {
   const completo = serie(item.id);
   const s = recorte(completo, janela);
   if (!s.length) return semDado(canvas, 'Sem lançamentos ainda. A curva aparece conforme a coleta diária avança.');
+  if (janela && s.at(-1).d < somaDias(hojeIso(), -janela))
+    return semDado(canvas, `Último dado em ${dataBr(s.at(-1).d)}, fora do período escolhido. Amplie o período para ver a série.`);
   const poucos = s.length < 40;
   const cores = s.map(p => { const n = nivel(item, p.v); return n === 'neutro' || n === 'vazio' ? COR.tinta : COR[n]; });
   const ch = new Chart(canvas, {
@@ -189,7 +192,7 @@ function graficoDivergencia() {
   const cv1 = $('#g-divergencia'), cv2 = $('#g-spread');
   if (!b.length && !c.length) { semDado(cv1, 'Sem dados de Brent e crack ainda.'); semDado(cv2, ''); return; }
   const pt = s => s.map(p => ({ x: ms(p.d), y: p.v, f: p.f }));
-  const base = s => s.length > 60 ? 0 : 2.5;
+  const base = s => s.length > 30 ? 0 : 2.5;
   graficos.push(new Chart(cv1, {
     type: 'line',
     data: { datasets: [
@@ -224,7 +227,7 @@ function graficoDivergencia() {
   else graficos.push(new Chart(cv2, {
     type: 'line',
     data: { datasets: [
-      { label: 'Crack NY em % do Brent', data: razao.map(p => ({ x: ms(p.d), y: p.v })), borderColor: COR.alerta, backgroundColor: 'rgba(168,30,104,.08)', fill: true, borderWidth: 1.6, pointRadius: razao.length > 60 ? 0 : 2.5 },
+      { label: 'Crack NY em % do Brent', data: razao.map(p => ({ x: ms(p.d), y: p.v })), borderColor: COR.alerta, backgroundColor: 'rgba(168,30,104,.08)', fill: true, borderWidth: 1.6, pointRadius: razao.length > 30 ? 0 : 2.5 },
       ...(mediaPre ? [{ label: 'Média antes da guerra', data: [{ x: limitesX(janela, brent).min, y: mediaPre }, { x: ms(hojeIso()), y: mediaPre }], borderColor: COR.fraca, borderDash: [5, 4], borderWidth: 1.2, pointRadius: 0 }] : []),
     ] },
     options: {
@@ -322,7 +325,8 @@ function cartao(item) {
       <p class="det-txt"><b>Como ler:</b> ${esc(item.leitura)}</p>
       <p class="det-txt fonte"><b>Fonte:</b> <a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.fonte)}</a>${u ? ` · último ponto via ${NOME_FONTE[u.f] || u.f}` : ''}</p>
     </details>`;
-  requestAnimationFrame(() => graficoIndicador(el.querySelector('canvas'), item));
+  // setTimeout e não requestAnimationFrame: rAF não dispara em aba de fundo, e os cartões ficariam vazios
+  setTimeout(() => graficoIndicador(el.querySelector('canvas'), item), 0);
   return el;
 }
 function descFaixa(i) {
