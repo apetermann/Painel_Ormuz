@@ -1,0 +1,48 @@
+{
+ "execucoes": [
+  {
+   "em": "2026-09-19T19:11:12.815Z",
+   "data": "2026-09-19",
+   "etapas": [
+    {
+     "etapa": "eia",
+     "status": "parcial",
+     "itens": 0,
+     "detalhe": [
+      "brent: FALHOU EIA PET.RBRTE.D: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "crackny: FALHOU EIA PET.RBRTE.D: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "distdesvio: FALHOU EIA PET.WDISTUS1.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "crudesvio: FALHOU EIA PET.WCESTUS1.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "spr: FALHOU EIA PET.WCSSTUS1.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "refinoeua: FALHOU EIA PET.WPULEUS3.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "demdistdesvio: FALHOU EIA PET.WDIUPUS2.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}"
+     ]
+    },
+    {
+     "etapa": "bcb",
+     "status": "ok",
+     "itens": 1,
+     "detalhe": [
+      "cambio: 431 pontos, 0 novos, último 2026-09-18 = 5.1575"
+     ]
+    },
+    {
+     "etapa": "cotacoes",
+     "status": "falhou",
+     "itens": 0,
+     "detalhe": [
+      "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"API key is invalid.\"},\"request_id\":null}"
+     ]
+    },
+    {
+     "etapa": "briefing",
+     "status": "falhou",
+     "itens": 0,
+     "detalhe": [
+      "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"API key is invalid.\"},\"request_id\":null}"
+     ]
+    }
+   ]
+  }
+ ]
+}
