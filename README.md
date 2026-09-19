@@ -12,7 +12,7 @@ GitHub Actions (19h)  ──►  scripts/atualizar.mjs  ──►  data/leituras
 ```
 
 - **Fontes oficiais** (EIA e Banco Central) trazem o histórico desde janeiro de 2025 já na primeira coleta, então esses gráficos têm tendência desde o primeiro dia.
-- **Indicadores sem API** (crack europeu, seguro, travessias, ureia, diesel na bomba, refino e vendas no Brasil etc.) são buscados na web pelo Claude uma vez por dia, com a data de referência do número. A série desses indicadores cresce a cada coleta.
+- **Indicadores sem API** (crack europeu, seguro, travessias, ureia, diesel na bomba, refino e vendas no Brasil etc.) são buscados na web pelo Claude, com a data de referência do número. Os mensais, marcados com `"cadencia": "semanal"` em `indicadores.json`, só são buscados às segundas-feiras, porque quase todo o custo vem dos resultados de busca que entram no contexto do modelo.
 - Cada ponto guarda a **fonte** (`eia`, `bcb`, `ia`, `manual`, `doc`). Valor revisado não é sobrescrito em silêncio: a mudança fica em `correcoes` dentro de `leituras.json`.
 - A aba **Coleta** mostra o diagnóstico de cada execução, incluindo a resposta bruta da busca.
 
@@ -33,6 +33,7 @@ GitHub Actions (19h)  ──►  scripts/atualizar.mjs  ──►  data/leituras
 | Atualizar um marco | Edite `estado`, `situacao` e `atualizado_em` em `data/marcos.json` |
 | Mudar faixa de alerta | Edite `data/indicadores.json` e registre a faixa anterior em `data/faixas-historico.json` |
 | Criar gatilho | Acrescente em `data/gatilhos.json`, condições por indicador ou marco, com persistência opcional em dias |
+| Comparar custo entre modelos | *Run workflow* e escolha o modelo no campo `modelo`; a aba **Coleta** mostra o modelo e os tokens de cada execução |
 | Levar séries para planilha | Botão **Baixar CSV** na página (separador `;`, decimal com vírgula) |
 | Ver localmente | `npm install`, depois `npm run atualizar:sem-ia` e `npm run servir`, e abra <http://localhost:8080> |
 

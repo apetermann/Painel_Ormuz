@@ -448,7 +448,7 @@ function renderExecucoes() {
   $('#execucoes').innerHTML = lista.slice(0, 15).map(e => `
     <article class="exec"><h3>${new Date(e.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}</h3>
       <table>${e.etapas.map(et => `<tr><td>${esc(et.etapa)}</td><td class="st-${esc(et.status)}">${esc(et.status)}</td>
-        <td>${et.itens} itens${et.motivo ? ' · parada: ' + esc(et.motivo) : ''}<br>${(et.detalhe || []).map(esc).join('<br>')}
+        <td>${et.itens} itens${et.motivo ? ' · parada: ' + esc(et.motivo) : ''}${et.modelo ? ' · ' + esc(et.modelo) : ''}${et.tokens ? ` · ${fmt(et.tokens.entrada / 1000, 0)} mil tokens de entrada` : ''}<br>${(et.detalhe || []).map(esc).join('<br>')}
         ${et.bruto ? `<details><summary>resposta bruta</summary><pre>${esc(et.bruto)}</pre></details>` : ''}</td></tr>`).join('')}</table>
     </article>`).join('');
 }

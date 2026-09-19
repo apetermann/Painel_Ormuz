@@ -179,7 +179,7 @@ async function etapaBCB() {
 }
 
 // ---------- Claude com busca web ----------
-async function perguntarClaude(pedido) {
+async function perguntarClaude(pedido, buscas = 8) {
   const { default: Anthropic } = await import('@anthropic-ai/sdk');
   const client = new Anthropic();
   const messages = [{ role: 'user', content: pedido }];
@@ -194,7 +194,7 @@ async function perguntarClaude(pedido) {
     const params = {
       model: MODELO,
       max_tokens: 16000,
-      tools: [{ type: busca, name: 'web_search', max_uses: 15 }],
+      tools: [{ type: busca, name: 'web_search', max_uses: buscas }],
       messages,
     };
     resp = comFallback
@@ -237,10 +237,14 @@ function extrairNumeros(texto) {
 }
 
 async function etapaCotacoes() {
-  const et = { etapa: 'cotacoes', status: 'ok', itens: 0, detalhe: [] };
-  const ids = INDICADORES.filter(i => i.origem === 'ia').map(i => i.id);
+  const et = { etapa: 'cotacoes', status: 'ok', itens: 0, detalhe: [], modelo: MODELO };
+  // Indicadores mensais ou de divulgação lenta só entram às segundas: cada busca a menos economiza tokens.
+  const segunda = new Date(HOJE + 'T12:00:00Z').getUTCDay() === 1;
+  const ids = INDICADORES.filter(i => i.origem === 'ia' && (segunda || i.cadencia !== 'semanal' || !(leituras.series[i.id] || []).length)).map(i => i.id);
+  et.detalhe.push(`${ids.length} indicadores nesta chamada${segunda ? ', segunda-feira: inclui os semanais' : ', dia comum: só os diários'}`);
   try {
-    const { texto, stop, uso } = await perguntarClaude(montarPedidoCotacoes(ids));
+    // quase todo o custo vem dos resultados de busca que entram no contexto; um teto por chamada segura a conta
+    const { texto, stop, uso } = await perguntarClaude(montarPedidoCotacoes(ids), Math.min(12, Math.max(5, Math.ceil(ids.length * 0.7))));
     et.motivo = stop;
     et.bruto = texto.slice(0, 4000);
     et.tokens = uso && { entrada: uso.input_tokens, saida: uso.output_tokens };
@@ -300,9 +304,10 @@ function extrairSinais(texto) {
 }
 
 async function etapaBriefing() {
-  const et = { etapa: 'briefing', status: 'ok', itens: 0, detalhe: [] };
+  const et = { etapa: 'briefing', status: 'ok', itens: 0, detalhe: [], modelo: MODELO };
   try {
-    const { texto, stop } = await perguntarClaude(PEDIDO_BRIEF());
+    const { texto, stop, uso } = await perguntarClaude(PEDIDO_BRIEF(), 8);
+    et.tokens = { entrada: uso.input_tokens, saida: uso.output_tokens };
     et.motivo = stop;
     et.bruto = texto.slice(0, 4000);
     if (stop === 'refusal') throw new Error('modelo recusou o pedido');

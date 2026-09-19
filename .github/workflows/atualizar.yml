@@ -13,6 +13,11 @@ on:
         description: 'Coletar só EIA e Banco Central, sem busca web (sem custo de API)'
         type: boolean
         default: false
+      modelo:
+        description: 'Modelo só desta execução, para comparar custo'
+        type: choice
+        default: 'padrão'
+        options: ['padrão', 'claude-haiku-4-5', 'claude-sonnet-5', 'claude-opus-5']
   push:
     branches: [main]
     paths-ignore: ['data/leituras.json', 'data/execucoes.json', 'data/briefings.json']
@@ -42,7 +47,7 @@ jobs:
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          PAINEL_MODELO: ${{ vars.PAINEL_MODELO }}
+          PAINEL_MODELO: ${{ (github.event.inputs.modelo != '' && github.event.inputs.modelo != 'padrão') && github.event.inputs.modelo || vars.PAINEL_MODELO }}
           PAINEL_LANCAMENTOS: ${{ github.event.inputs.lancamentos }}
         run: node scripts/atualizar.mjs ${{ github.event.inputs.sem_ia == 'true' && '--sem-ia' || '' }}
       - name: Gravar no repositório
