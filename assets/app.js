@@ -300,6 +300,7 @@ function cartao(item) {
 
   const el = document.createElement('article');
   el.className = `ind ${n}`;
+  el.dataset.id = item.id;
   el.innerHTML = `
     <div class="ind-topo">
       <div class="ind-nome">${esc(item.nome)}<small>${esc(item.dica)}</small></div>
@@ -353,25 +354,115 @@ function renderGrupos() {
   }
 }
 
-// Leitura agregada ponderada pelo peso de cada indicador (seção 7.4 da especificação).
-function renderLeitura() {
-  let al = 0, at = 0, nAl = 0, nAt = 0, preench = 0, total = 0;
+// ---------- farol e índice geral ----------
+// Índice de tensão: média dos níveis ponderada pelo peso, de 0 (tudo normal) a 100 (tudo em alerta).
+// Indicadores de acompanhamento e sem dado ficam de fora, e a conta registra quantos entraram.
+const PONTOS_NIVEL = { ok: 0, atencao: 50, alerta: 100 };
+function indice(dia) {
+  let soma = 0, pesos = 0, al = 0, at = 0, ok = 0, fora = 0;
   for (const i of TODOS) {
     if (i.dir === 'acompanhamento') continue;
-    total++;
-    const n = nivel(i, ultimo(i.id)?.v);
-    if (n === 'vazio') continue;
-    preench++;
-    if (n === 'alerta') { al += i.peso ?? 1; nAl++; }
-    if (n === 'atencao') { at += i.peso ?? 1; nAt++; }
+    const p = dia ? valorEm(i.id, dia) : ultimo(i.id);
+    const n = nivel(i, p?.v);
+    if (n === 'vazio') { fora++; continue; }
+    const peso = i.peso ?? 1;
+    soma += PONTOS_NIVEL[n] * peso;
+    pesos += peso;
+    if (n === 'alerta') al++; else if (n === 'atencao') at++; else ok++;
   }
-  let txt = 'Normalizando';
-  if (!preench) txt = 'Sem dados';
-  else if (al >= 4) txt = 'Reescalada';
-  else if (al >= 2 || at >= 5) txt = 'Tensão elevada';
-  else if (al > 0 || at > 0) txt = 'Instabilidade lateral';
-  $('#leitura-val').textContent = txt;
-  $('#leitura-det').textContent = `${nAl} em alerta (peso ${fmt(al, 1)}), ${nAt} em atenção (peso ${fmt(at, 1)}), ${preench} de ${total} com dado.`;
+  return { valor: pesos ? soma / pesos : null, al, at, ok, fora, pesos };
+}
+const ESTADO_INDICE = v =>
+  v === null ? { txt: 'Sem dados', nivel: 'vazio' } :
+  v >= 60 ? { txt: 'Reescalada', nivel: 'alerta' } :
+  v >= 40 ? { txt: 'Tensão elevada', nivel: 'alerta' } :
+  v >= 20 ? { txt: 'Instabilidade lateral', nivel: 'atencao' } :
+  { txt: 'Normalizando', nivel: 'ok' };
+
+function serieIndice(dias) {
+  const out = [];
+  const n = dias || 365;
+  for (let k = n; k >= 0; k -= (n > 120 ? 3 : 1)) {   // passo maior em janelas longas, para não pesar
+    const d = somaDias(hojeIso(), -k);
+    const r = indice(d);
+    if (r.valor !== null) out.push({ d, v: Math.round(r.valor * 10) / 10 });
+  }
+  return out;
+}
+
+function renderFarol() {
+  const agora = indice();
+  const est = ESTADO_INDICE(agora.valor);
+  $('#geral-valor').textContent = agora.valor === null ? '—' : fmt(agora.valor, 0);
+  $('#geral-valor').className = 'num ' + est.nivel;
+  $('#geral-estado').textContent = est.txt;
+  $('#geral-estado').className = 'estado-geral ' + est.nivel;
+  const ontem = indice(somaDias(hojeIso(), -7));
+  const delta = agora.valor !== null && ontem.valor !== null ? agora.valor - ontem.valor : null;
+  $('#geral-det').innerHTML = `${agora.al} em alerta · ${agora.at} em atenção · ${agora.ok} normais · ${agora.fora} sem dado`
+    + (delta === null ? '' : `<br>${sinal(Math.round(delta * 10) / 10)} em 7 dias`);
+  $('#geral-explica').textContent = `O índice é a média dos níveis de ${agora.al + agora.at + agora.ok} indicadores, ponderada pelo peso de cada um: normal vale 0, atenção vale 50 e alerta vale 100. Os pesos estão em indicadores.json e refletem a tese atual, com destilados e crack pesando mais que frete. Indicadores sem faixa de alerta e sem dado ficam de fora da conta. Acima de 60 o painel lê como reescalada; entre 40 e 60, tensão elevada; entre 20 e 40, instabilidade lateral.`;
+
+  const cont = $('#farois');
+  cont.innerHTML = GRUPOS.map(g => `
+    <section class="grupo-farol">
+      <h3>${esc(g.grupo)}</h3>
+      <div class="farois">${g.itens.map(i => {
+        const u = ultimo(i.id);
+        const n = nivel(i, u?.v);
+        const s = serie(i.id);
+        const ant = s.length > 1 ? s.at(-2) : null;
+        const d = u && ant ? u.v - ant.v : null;
+        const idade = defasagem(i, u);
+        return `<button class="tile ${n}" data-id="${i.id}" title="${esc(i.nome)} · ${ROT_NIVEL[n]}">
+          <i class="farol ${n}"></i>
+          <span class="tile-nome">${esc(i.nome)}</span>
+          <span class="tile-val">${fmt(u?.v)}<small>${esc(i.unidade)}</small></span>
+          <span class="tile-pe">${u ? dataBr(u.d) : 'sem dado'}${idade?.velho ? ' · defasado' : ''}${d === null ? '' : ` · ${sinal(d)}`}${i.confianca === 'baixa' ? ' · fonte única' : ''}</span>
+        </button>`;
+      }).join('')}</div>
+    </section>`).join('');
+  cont.onclick = e => {
+    const b = e.target.closest('.tile');
+    if (!b) return;
+    trocarAba('painel');
+    const alvo = [...document.querySelectorAll('#grupos .ind')].find(el => el.dataset.id === b.dataset.id);
+    if (alvo) { alvo.scrollIntoView({ block: 'center', behavior: 'smooth' }); alvo.classList.add('destacado'); setTimeout(() => alvo.classList.remove('destacado'), 2000); }
+  };
+  graficoIndice();
+}
+
+function graficoIndice() {
+  const cv = $('#g-indice');
+  if (!cv) return;
+  const s = serieIndice(janela || 365);
+  if (s.length < 2) return semDado(cv, 'O histórico do índice aparece quando houver série suficiente.');
+  const faixa = { dir: 'alta-ruim', t1: 20, t2: 40 };   // mesmas quebras dos estados
+  graficos.push(new Chart(cv, {
+    type: 'line',
+    data: { datasets: [{ data: s.map(p => ({ x: ms(p.d), y: p.v })), borderColor: COR.tinta, borderWidth: 1.8, pointRadius: 0, fill: true, backgroundColor: 'rgba(18,48,59,.05)' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      scales: { x: eixoX(janela || 365, s), y: { min: 0, max: 100, grid: { color: 'rgba(18,48,59,.06)' }, ticks: { stepSize: 25, color: COR.fraca, font: { size: 10 } } } },
+      plugins: {
+        legend: { display: false },
+        faixas: { item: faixa },
+        eventos: { lista: EVENTOS, rotulos: true },
+        tooltip: { ...tooltipBase, callbacks: { ...tooltipBase.callbacks, label: c => `índice ${fmt(c.parsed.y, 0)} · ${ESTADO_INDICE(c.parsed.y).txt}` } },
+      },
+    },
+    plugins: [pluginFaixas, pluginEventos],
+  }));
+}
+
+// Leitura agregada ponderada pelo peso de cada indicador (seção 7.4 da especificação).
+function renderLeitura() {
+  // mesma conta do farol: um número só, para o cabeçalho e a aba não discordarem
+  const r = indice();
+  const est = ESTADO_INDICE(r.valor);
+  $('#leitura-val').textContent = r.valor === null ? 'Sem dados' : `${est.txt} · índice ${fmt(r.valor, 0)}`;
+  $('#leitura-det').textContent = `${r.al} em alerta, ${r.at} em atenção, ${r.ok} normais, ${r.fora} sem dado.`;
   const em = RAW.atualizado_em ? new Date(RAW.atualizado_em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' }) : '—';
   $('#atualizacao').innerHTML = `última coleta<br>${em}`;
 }
@@ -472,19 +563,21 @@ function baixarCsv() {
 // ---------- navegação ----------
 function redesenhar() {
   graficos.splice(0).forEach(g => g.destroy());
-  for (const id of ['g-divergencia', 'g-spread']) {
+  for (const id of ['g-divergencia', 'g-spread', 'g-indice']) {
     const antigo = document.getElementById(id) || null;
     if (!antigo) {
       // o canvas pode ter sido trocado por aviso de sem dado; recria
-      const alvo = id === 'g-divergencia' ? document.querySelector('.grafico.grande') : document.querySelector('.grafico.medio');
-      alvo.innerHTML = `<canvas id="${id}"></canvas>`;
+      const alvo = id === 'g-indice' ? document.querySelector('.geral-graf .grafico')
+        : id === 'g-divergencia' ? document.querySelector('.destaque .grafico.grande') : document.querySelector('.destaque .grafico.medio');
+      if (alvo) alvo.innerHTML = `<canvas id="${id}"></canvas>`;
     }
   }
   graficoDivergencia();
+  renderFarol();
   renderGrupos();
 }
 function trocarAba(qual) {
-  for (const k of ['painel', 'gatilhos', 'brief', 'exec']) {
+  for (const k of ['farol', 'painel', 'gatilhos', 'brief', 'exec']) {
     $('#aba-' + k).setAttribute('aria-selected', k === qual);
     $('#vista-' + k).hidden = k !== qual;
   }
@@ -506,6 +599,7 @@ async function iniciar() {
   document.querySelectorAll('#periodo button').forEach(b => b.setAttribute('aria-pressed', parseInt(b.dataset.dias, 10) === janela));
 
   renderLeitura();
+  renderFarol();
   graficoDivergencia();
   renderGrupos();
   renderMarcos();
@@ -520,10 +614,10 @@ async function iniciar() {
     try { localStorage.setItem('painel-janela', janela); } catch {}
     redesenhar();
   });
-  for (const k of ['painel', 'gatilhos', 'brief', 'exec']) $('#aba-' + k).addEventListener('click', () => trocarAba(k));
+  for (const k of ['farol', 'painel', 'gatilhos', 'brief', 'exec']) $('#aba-' + k).addEventListener('click', () => trocarAba(k));
   $('#btn-csv').addEventListener('click', baixarCsv);
   $('#btn-pdf').addEventListener('click', () => window.print());
-  try { const a = localStorage.getItem('painel-aba'); if (a && a !== 'painel') trocarAba(a); } catch {}
+  try { const a = localStorage.getItem('painel-aba'); if (a && a !== 'farol') trocarAba(a); } catch {}
 }
 
 document.addEventListener('DOMContentLoaded', () => {

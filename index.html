@@ -32,13 +32,39 @@
 </header>
 
 <nav class="abas" role="tablist">
-  <button role="tab" id="aba-painel" aria-selected="true" aria-controls="vista-painel">Indicadores</button>
+  <button role="tab" id="aba-farol" aria-selected="true" aria-controls="vista-farol">Farol</button>
+  <button role="tab" id="aba-painel" aria-selected="false" aria-controls="vista-painel">Indicadores</button>
   <button role="tab" id="aba-gatilhos" aria-selected="false" aria-controls="vista-gatilhos">Gatilhos e marcos</button>
   <button role="tab" id="aba-brief" aria-selected="false" aria-controls="vista-brief">Briefing</button>
   <button role="tab" id="aba-exec" aria-selected="false" aria-controls="vista-exec">Coleta</button>
 </nav>
 
-<section id="vista-painel" role="tabpanel" aria-labelledby="aba-painel">
+<section id="vista-farol" role="tabpanel" aria-labelledby="aba-farol">
+  <section class="geral">
+    <div class="geral-num">
+      <div class="rot">Índice de tensão</div>
+      <div class="num" id="geral-valor">—</div>
+      <div class="estado-geral" id="geral-estado">Carregando</div>
+      <div class="geral-det" id="geral-det"></div>
+    </div>
+    <div class="geral-graf">
+      <div class="grafico medio"><canvas id="g-indice" aria-label="Índice de tensão ao longo do tempo"></canvas></div>
+    </div>
+  </section>
+  <p class="nota" id="geral-explica"></p>
+
+  <div class="legenda">
+    <span><i class="farol ok"></i> normal</span>
+    <span><i class="farol atencao"></i> atenção</span>
+    <span><i class="farol alerta"></i> alerta</span>
+    <span><i class="farol neutro"></i> só acompanhamento</span>
+    <span><i class="farol vazio"></i> sem dado</span>
+    <span class="dica">Clique num indicador para ver a série.</span>
+  </div>
+  <div id="farois"></div>
+</section>
+
+<section id="vista-painel" role="tabpanel" aria-labelledby="aba-painel" hidden>
   <div class="barra">
     <div class="periodo" id="periodo" role="group" aria-label="Período dos gráficos">
       <button data-dias="30" aria-pressed="false">30 dias</button>
