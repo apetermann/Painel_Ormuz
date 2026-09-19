@@ -1,6 +1,65 @@
 {
  "execucoes": [
   {
+   "em": "2026-09-19T19:17:32.392Z",
+   "data": "2026-09-19",
+   "etapas": [
+    {
+     "etapa": "eia",
+     "status": "parcial",
+     "itens": 0,
+     "detalhe": [
+      "brent: FALHOU EIA PET.RBRTE.D: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "crackny: FALHOU EIA PET.RBRTE.D: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "distdesvio: FALHOU EIA PET.WDISTUS1.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "crudesvio: FALHOU EIA PET.WCESTUS1.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "spr: FALHOU EIA PET.WCSSTUS1.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "refinoeua: FALHOU EIA PET.WPULEUS3.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}",
+      "demdistdesvio: FALHOU EIA PET.WDIUPUS2.W: HTTP 403 {\"code\":\"API_KEY_INVALID\",\"message\":\"An invalid api_key was supplied. Get one at https://api.eia.gov:443\"}"
+     ]
+    },
+    {
+     "etapa": "bcb",
+     "status": "ok",
+     "itens": 1,
+     "detalhe": [
+      "cambio: 431 pontos, 0 novos, último 2026-09-18 = 5.1575"
+     ]
+    },
+    {
+     "etapa": "cotacoes",
+     "status": "ok",
+     "itens": 8,
+     "detalhe": [
+      "crack: 85.86 (2026-07-30)",
+      "refinorussia: 3.8 (2026-08-01)",
+      "refinomundo: 81.4 (2026-08-01)",
+      "futbrasil: 101.2 (2026-09-19)",
+      "vendasdiesel: -5.1 (2026-09-19)",
+      "importdiesel: -6.3 (2026-08-01)",
+      "diesel: 6.97 (2026-07-11)",
+      "defasagem: -107 (2026-09-15)"
+     ],
+     "motivo": "end_turn",
+     "bruto": "I'll search for each of these market data points.\n{\"crack\":85.86,\"crack_data\":\"2026-07-30\",\"refinorussia\":3.8,\"refinorussia_data\":\"2026-08-01\",\"refinomundo\":81.4,\"refinomundo_data\":\"2026-08-01\",\"futbrasil\":101.2,\"futbrasil_data\":\"2026-04-01\",\"vendasdiesel\":-5.1,\"vendasdiesel_data\":\"2026-01-01\",\"importdiesel\":-6.3,\"importdiesel_data\":\"2026-08-01\",\"diesel\":6.97,\"diesel_data\":\"2026-07-11\",\"defasagem\":-107,\"defasagem_data\":\"2026-09-15\"}",
+     "tokens": {
+      "entrada": 961972,
+      "saida": 7145
+     }
+    },
+    {
+     "etapa": "briefing",
+     "status": "ok",
+     "itens": 3,
+     "detalhe": [
+      "3 sinais"
+     ],
+     "motivo": "end_turn",
+     "bruto": "{\"sinais\":[{\"titulo\":\"Fluxo por Ormuz atinge máxima de seis meses, segundo CENTCOM\",\"fonte\":\"Bloomberg / US Central Command (Adm. Brad Cooper, 19/09/2026)\",\"dado\":\"Embarques de petróleo e GNL nas últimas duas semanas na máxima de seis meses; faixas principais livres de minas; +1 bilhão de barris escoados; Irã exportando zero\",\"implicacao\":\"Prêmio de risco no cru desinfla (Brent US$103,8, terceira queda seguida em 18/09) enquanto cracks de diesel seguem recordes: descolamento cru-destilado se amplia\",\"frente\":\"1\",\"relevancia\":\"alto\"},{\"titulo\":\"Brasil cria subvenção de R$1/litro no diesel A e defasagem bate recorde\",\"fonte\":\"Portaria MF nº 2.813/2026 (Ministério da Fazenda); Petrobras; Abicom\",\"dado\":\"Petrobras subiu diesel A rodoviário R$1,00/litro em 17/09, neutralizado por subvenção federal de igual valor; Abicom mede defasagem de R$3,89/litro em 18/09\",\"implicacao\":\"Preço interno desconectado do PPI inviabiliza importador, concentra oferta na Petrobras e eleva risco real de desabastecimento de diesel no 4T26\",\"frente\":\"7\",\"relevancia\":\"alto\"},{\"titulo\":\"Rússia estende embargo de exportação de diesel até 31 de outubro\",\"fonte\":\"Vedomosti (decreto governamental nº 1097/2026); Energy Intelligence\",\"dado\":\"Proibição a produtores prorrogada até 31/10, com avaliação de estender a janeiro/2027; manutenções adiadas por ataques de drones e importações recordes de diesel\",\"implicacao\":\"Retira oferta estrutural de destilado do mercado global no inverno; sustenta cracks acima de US$100/bbl e reforça escassez de capacidade de conversão\",\"frente\":\"2\",\"relevancia\":\"alto\"}]}"
+    }
+   ]
+  },
+  {
    "em": "2026-09-19T19:11:12.815Z",
    "data": "2026-09-19",
    "etapas": [
