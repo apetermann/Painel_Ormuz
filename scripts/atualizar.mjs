@@ -19,7 +19,7 @@ const ARG = new Set(process.argv.slice(2));
 
 const INICIO_HIST = '2025-01-01';   // início das séries exibidas
 const INICIO_BASE = '2019-06-01';   // histórico extra para a média de 5 anos
-const EIA_KEY = process.env.EIA_API_KEY || 'DEMO_KEY';
+const EIA_KEY = (process.env.EIA_API_KEY || '').trim() || 'DEMO_KEY';
 const MODELO = process.env.PAINEL_MODELO || 'claude-opus-5';
 
 // Valores registrados no documento de análise, usados como ponto de partida das séries sem API.
@@ -244,7 +244,7 @@ async function etapaCotacoes() {
       if (!Number.isFinite(v)) continue;
       const i = PORID[id];
       const amp = i.max - i.min;
-      if (v < i.min - 2 * amp || v > i.max + 2 * amp) { et.detalhe.push(`${id}: ${v} rejeitado, fora da escala plausível`); continue; }
+      if (v < i.min - amp || v > i.max + amp) { et.detalhe.push(`${id}: ${v} rejeitado, fora da escala plausível`); continue; }
       let d = datas[id] || HOJE;
       if (d > HOJE || d < limite) d = HOJE;
       registrar(id, d, v, 'ia');
