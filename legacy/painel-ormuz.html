@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel Ormuz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --agua:#E6EDF0;--papel:#FFFFFF;--terra:#E9D6A6;--tinta:#12303B;--tinta-fraca:#5C7885;
+  --linha:#C3D3DA;--ok:#1F6F52;--atencao:#B0761A;--alerta:#A81E68;--sombra:0 1px 0 rgba(18,48,59,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--agua);color:var(--tinta);font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 64px}
+
+header{background:var(--terra);margin:0 -16px 20px;padding:24px 16px 20px;border-bottom:1px solid rgba(18,48,59,.25)}
+h1{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:400;font-size:34px;line-height:1.05;margin:0 0 4px;letter-spacing:-.01em}
+.sub{font-size:13.5px;color:#5a4a22;margin:0 0 18px;max-width:52ch}
+.leitura{background:rgba(255,255,255,.6);border:1px solid rgba(18,48,59,.18);padding:12px 14px}
+.leitura .rot{font-size:12px;color:#5a4a22;margin-bottom:2px}
+.leitura .val{font-family:"Fraunces",Georgia,serif;font-size:22px;line-height:1.2}
+.leitura .det{font-size:13px;color:#5a4a22;margin-top:4px}
+
+.abas{display:flex;margin-bottom:18px;border-bottom:1px solid var(--linha)}
+.abas button{background:none;border:none;border-bottom:2px solid transparent;color:var(--tinta-fraca);padding:10px 2px;margin-right:22px;font-size:15px;border-radius:0}
+.abas button[aria-selected=true]{color:var(--tinta);border-bottom-color:var(--tinta);font-weight:500}
+
+.acoes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+button{font-family:inherit;font-size:14.5px;border:1px solid var(--tinta);background:var(--tinta);color:#fff;padding:11px 16px;cursor:pointer;border-radius:2px}
+button.sec{background:transparent;color:var(--tinta)}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,input:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--alerta);outline-offset:2px}
+.status-msg{font-size:13.5px;color:var(--tinta-fraca);margin:-8px 0 20px;min-height:20px}
+
+.grupo{margin-bottom:28px}
+.grupo > h2{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:400;font-size:20px;margin:0 0 2px}
+.grupo > p{font-size:13px;color:var(--tinta-fraca);margin:0 0 12px;max-width:56ch}
+
+.ind{background:var(--papel);border:1px solid var(--linha);border-left-width:4px;margin-bottom:8px;box-shadow:var(--sombra)}
+.ind.ok{border-left-color:var(--ok)}.ind.atencao{border-left-color:var(--atencao)}
+.ind.alerta{border-left-color:var(--alerta)}.ind.vazio{border-left-color:var(--linha)}
+.ind-topo{display:flex;align-items:baseline;gap:12px;padding:12px 14px;cursor:pointer}
+.ind-nome{flex:1;font-size:15px;font-weight:500}
+.ind-nome small{display:block;font-weight:400;font-size:12.5px;color:var(--tinta-fraca);margin-top:1px}
+.ind-val{font-family:"IBM Plex Mono",monospace;font-size:19px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ind-val.ok{color:var(--ok)}.ind-val.atencao{color:var(--atencao)}.ind-val.alerta{color:var(--alerta)}.ind-val.vazio{color:var(--linha)}
+.ind-val .u{font-size:12px;color:var(--tinta-fraca);margin-left:2px}
+.delta{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--tinta-fraca);display:block;text-align:right;font-variant-numeric:tabular-nums}
+
+.ind-det{display:none;padding:0 14px 14px;border-top:1px solid #EDF2F4}
+.ind.aberto .ind-det{display:block}
+.faixa{display:flex;height:6px;margin:14px 0 6px;background:var(--linha)}
+.faixa span{display:block;height:100%}
+.faixa .f-ok{background:var(--ok)}.faixa .f-at{background:var(--atencao)}.faixa .f-al{background:var(--alerta)}
+.faixa-rot{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--tinta-fraca);margin-bottom:12px}
+.marcador{position:relative;height:0}
+.marcador i{position:absolute;top:-13px;width:2px;height:12px;background:var(--tinta);transform:translateX(-1px)}
+.det-txt{font-size:13.5px;color:var(--tinta-fraca);margin:0 0 10px;max-width:58ch}
+.det-txt b{color:var(--tinta);font-weight:500}
+.selo{display:inline-block;font-size:11.5px;padding:2px 7px;border:1px solid var(--linha);color:var(--tinta-fraca);margin-bottom:10px}
+.selo.baixa{border-color:var(--alerta);color:var(--alerta)}
+.selo.media{border-color:var(--atencao);color:var(--atencao)}
+.entrada{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+input[type=text]{font-family:"IBM Plex Mono",monospace;font-size:15px;padding:9px 10px;border:1px solid var(--linha);border-radius:2px;width:110px;background:#fff;color:var(--tinta)}
+input[type=date]{font-family:"IBM Plex Mono",monospace;font-size:14px;padding:8px 9px;border:1px solid var(--linha);border-radius:2px;background:#fff;color:var(--tinta)}
+.entrada button{padding:9px 14px;font-size:13.5px}
+.dica-data{font-size:12.5px;color:var(--tinta-fraca);margin:0 0 12px}
+.fonte{font-size:13px;margin:10px 0 0}
+.fonte a{color:var(--tinta);text-decoration:underline;text-underline-offset:2px}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--tinta-fraca);margin:10px 0 0;font-variant-numeric:tabular-nums}
+.stats b{display:block;color:var(--tinta);font-weight:500;font-size:14px}
+
+.grafico{margin-top:12px;background:#FAFCFD;border:1px solid #EDF2F4;padding:10px 8px 6px}
+.grafico svg{display:block;width:100%;height:120px;overflow:visible}
+.grafico.alto svg{height:150px}
+.eixo{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--tinta-fraca);margin-top:4px;padding:0 2px}
+.vazio-txt{font-size:12.5px;color:var(--tinta-fraca);margin:10px 0 0}
+
+.tend-item{background:var(--papel);border:1px solid var(--linha);padding:14px;margin-bottom:10px;box-shadow:var(--sombra)}
+.tend-topo{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:2px}
+.tend-topo h3{font-size:15px;font-weight:500;margin:0}
+.periodo{display:flex;gap:6px;margin-bottom:16px}
+.periodo button{padding:7px 12px;font-size:13px;background:transparent;color:var(--tinta-fraca);border-color:var(--linha)}
+.periodo button[aria-pressed=true]{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+
+.marco{background:var(--papel);border:1px solid var(--linha);padding:12px 14px;margin-bottom:8px;box-shadow:var(--sombra)}
+.marco h3{font-size:15px;font-weight:500;margin:0 0 4px}
+.marco p{font-size:13.5px;color:var(--tinta-fraca);margin:0 0 8px;max-width:58ch}
+.marco input[type=text]{width:100%;font-family:"IBM Plex Sans",sans-serif;font-size:14px}
+
+.gatilho{border-left:3px solid var(--alerta);padding:2px 0 2px 12px;margin-bottom:14px}
+.gatilho b{font-weight:500}
+.gatilho p{margin:2px 0 0;font-size:13.5px;color:var(--tinta-fraca);max-width:58ch}
+
+details.backup{background:var(--papel);border:1px solid var(--linha);padding:12px 14px;margin-top:8px}
+details.backup summary{cursor:pointer;font-size:14.5px;font-weight:500}
+details.backup p{font-size:13px;color:var(--tinta-fraca);max-width:58ch}
+textarea{width:100%;height:110px;font-family:"IBM Plex Mono",monospace;font-size:12px;border:1px solid var(--linha);padding:8px;border-radius:2px;color:var(--tinta)}
+
+.nota-brief{font-size:13px;color:var(--tinta-fraca);max-width:58ch;margin:0 0 20px}
+.dia{margin-bottom:26px}
+.dia-cab{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--linha);padding-bottom:6px;margin-bottom:12px}
+.dia-cab h3{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:400;font-size:19px;margin:0}
+.dia-cab span{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--tinta-fraca)}
+.sinal{background:var(--papel);border:1px solid var(--linha);border-left-width:4px;border-left-color:var(--linha);padding:12px 14px;margin-bottom:8px;box-shadow:var(--sombra)}
+.sinal.alto{border-left-color:var(--alerta)}
+.sinal.medio{border-left-color:var(--atencao)}
+.sinal.baixo{border-left-color:var(--ok)}
+.sinal h4{font-size:15px;font-weight:500;margin:0 0 5px}
+.sinal p{font-size:13.5px;color:var(--tinta-fraca);margin:0 0 6px;max-width:60ch}
+.sinal p b{color:var(--tinta);font-weight:500}
+.sinal-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--tinta-fraca);margin-top:8px;padding-top:8px;border-top:1px solid #EDF2F4}
+.sinal-meta b{color:var(--tinta);font-weight:500}
+.vazio-dia{font-size:13.5px;color:var(--tinta-fraca);font-style:italic}
+
+footer{border-top:1px solid var(--linha);padding-top:16px;margin-top:32px;font-size:12.5px;color:var(--tinta-fraca);max-width:58ch}
+[hidden]{display:none !important}
+
+/* ---------- Impressão e PDF ---------- */
+#relatorio{display:none}
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  html,body{background:#fff !important}
+  body{font-size:10pt}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+  header,.abas,.acoes,.status-msg,#vista-hoje,#vista-brief,#vista-tend,footer,details.backup{display:none !important}
+  #relatorio{display:block !important}
+  .wrap{max-width:none;padding:0}
+  .rel-cab{border-bottom:2px solid var(--verde,#1F6F52);padding-bottom:8px;margin-bottom:14px}
+  .rel-cab h1{font-size:20pt;margin:0 0 2px}
+  .rel-cab .sub{font-size:9pt;color:#5C7885;margin:0}
+  .rel-leitura{background:#EEF1F4;border-left:4px solid #12303B;padding:8px 10px;margin:0 0 16px}
+  .rel-leitura b{font-size:12pt}
+  .rel h2{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:400;font-size:13pt;margin:16px 0 6px;page-break-after:avoid}
+  table.rel-t{width:100%;border-collapse:collapse;font-size:8.5pt;page-break-inside:auto}
+  table.rel-t th{background:#12303B;color:#fff;text-align:left;padding:5px 6px;font-weight:600}
+  table.rel-t td{padding:4px 6px;border-bottom:1px solid #D8DEE4;vertical-align:top}
+  table.rel-t tr{page-break-inside:avoid}
+  table.rel-t tr:nth-child(even) td{background:#F5F7F9}
+  td.n{font-family:"IBM Plex Mono",monospace;text-align:right;white-space:nowrap}
+  td.ok{color:#1F6F52;font-weight:600}
+  td.atencao{color:#B0761A;font-weight:600}
+  td.alerta{color:#A81E68;font-weight:600}
+  td.vazio{color:#9AAAB4}
+  .rel-marco{margin-bottom:6px;font-size:9pt;page-break-inside:avoid}
+  .rel-marco b{display:block}
+  .rel-sinal{margin-bottom:8px;font-size:9pt;padding-left:8px;border-left:3px solid #D8DEE4;page-break-inside:avoid}
+  .rel-sinal.alto{border-left-color:#A81E68}
+  .rel-sinal.medio{border-left-color:#B0761A}
+  .rel-sinal.baixo{border-left-color:#1F6F52}
+  .rel-sinal b{display:block}
+  .rel-sinal span{color:#5C7885}
+  .rel-rodape{margin-top:18px;padding-top:8px;border-top:1px solid #D8DEE4;font-size:8pt;color:#5C7885}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Painel Ormuz</h1>
+  <p class="sub">Risco energético e repasse para custo no Brasil. Revisão de 30 de agosto de 2026, com faixas recalibradas contra dados primários.</p>
+  <div class="leitura">
+    <div class="rot">Leitura do dia</div>
+    <div class="val" id="leitura-val">Sem dados</div>
+    <div class="det" id="leitura-det">Busque as cotações ou lance os valores manualmente.</div>
+  </div>
+</header>
+
+<div class="abas" role="tablist">
+  <button role="tab" id="aba-hoje" aria-selected="true" aria-controls="vista-hoje">Hoje</button>
+  <button role="tab" id="aba-brief" aria-selected="false" aria-controls="vista-brief">Briefing</button>
+  <button role="tab" id="aba-tend" aria-selected="false" aria-controls="vista-tend">Tendências</button>
+</div>
+
+<section id="vista-hoje" role="tabpanel" aria-labelledby="aba-hoje">
+  <div class="acoes">
+    <button id="btn-buscar">Buscar cotações agora</button>
+    <button class="sec" id="btn-abrir">Expandir tudo</button>
+    <button class="sec" id="btn-pdf">Gerar PDF</button>
+  </div>
+  <div class="status-msg" id="status-msg"></div>
+
+  <div id="grupos"></div>
+
+  <div class="grupo">
+    <h2>Marcos e datas</h2>
+    <p>Itens sem cotação diária que definem a direção. Atualize quando houver notícia.</p>
+    <div id="marcos"></div>
+  </div>
+
+  <div class="grupo">
+    <h2>Gatilhos de decisão</h2>
+    <p>Combinações que justificam ação, não apenas observação.</p>
+
+    <div class="gatilho">
+      <b>Ataque efetivo a navio atracado em porto do Kuwait ou do Bahrein</b>
+      <p>Aciona revisão imediata das premissas de custo de diesel e frete para os seis meses seguintes. É a condição que o Goldman fixou para o petróleo a US$ 120, e o mercado precifica o precedente, não o volume perdido. Antes disso, observar o prêmio de seguro para atracação, que reprecifica antes do evento.</p>
+    </div>
+    <div class="gatilho">
+      <b>Destilados abaixo de 15% da média com embargo russo prorrogado</b>
+      <p>Crise de diesel confirmada para o inverno, independentemente de Ormuz. Fixar contratos de frete, antecipar compra de combustível e revisar premissas do orçamento até fevereiro.</p>
+    </div>
+    <div class="gatilho">
+      <b>Brent caindo abaixo de 82 com crack de diesel acima de 40</b>
+      <p>Divergência entre cru e derivado confirmada. É o pior arranjo para o Brasil, porque tira a justificativa política do imposto de exportação enquanto o custo do diesel continua subindo.</p>
+    </div>
+    <div class="gatilho">
+      <b>Cobertura de diesel da OCDE abaixo de 25 dias</b>
+      <p>Nível a partir do qual, historicamente, o consumo de estoque vira pico de preço.</p>
+    </div>
+    <div class="gatilho">
+      <b>Prêmio de seguro abaixo de 2% com travessias acima de 40 por três semanas</b>
+      <p>Sinal real de desescalada em Ormuz, mais confiável que anúncio diplomático. Resolve o cru, não resolve o diesel.</p>
+    </div>
+    <div class="gatilho">
+      <b>Ureia acima de US$ 650 por tonelada entrando no quarto trimestre</b>
+      <p>Janela de compra da safra 2026/27 comprometida. Avaliar antecipação parcial.</p>
+    </div>
+    <div class="gatilho">
+      <b>Venezuela acima de 1,5 milhão de b/d com saída da OPEP confirmada</b>
+      <p>Vira a chave de escassez para excedente em 2027. O risco deixa de ser petróleo caro e passa a ser petróleo barato, que é o cenário mais difícil para justificar substituição por paridade de preço.</p>
+    </div>
+    <div class="gatilho">
+      <b>Falseamento: crack de diesel abaixo de 25 com embargo russo ainda em vigor</b>
+      <p>Se isso acontecer, a premissa de que oferta física de refino governa o preço do destilado está errada, e quem governa é destruição de demanda. O painel inteiro precisa ser reconstruído em torno de indicadores de atividade econômica.</p>
+    </div>
+  </div>
+</section>
+
+<section id="vista-brief" role="tabpanel" aria-labelledby="aba-brief" hidden>
+  <div class="acoes">
+    <button id="btn-brief">Varrer notícias de hoje</button>
+    <button class="sec" id="btn-brief-limpar">Limpar histórico</button>
+  </div>
+  <div class="status-msg" id="brief-msg"></div>
+  <p class="nota-brief">A varredura cobre sete frentes: fluxo físico em Ormuz e Bab el-Mandeb, refino e destilados, governança da oferta, eletricidade e data centers, carbono e regulação, mercado de bioinsumos e concorrência, e política de preços no Brasil. Só entram sinais que mudam alguma conclusão do documento. Dia sem sinal é registrado como tal.</p>
+  <div id="briefings"></div>
+
+  <details class="backup">
+    <summary>Resposta bruta da última chamada</summary>
+    <p>Use para diagnóstico quando a busca ou a varredura falhar. Mostra o que a API devolveu, cortado em 4.000 caracteres.</p>
+    <textarea id="cru-txt" readonly aria-label="Resposta bruta da API"></textarea>
+  </details>
+</section>
+
+<section id="vista-tend" role="tabpanel" aria-labelledby="aba-tend" hidden>
+  <div class="periodo" id="periodo">
+    <button data-dias="30" aria-pressed="true">30 dias</button>
+    <button data-dias="90" aria-pressed="false">90 dias</button>
+    <button data-dias="0" aria-pressed="false">Tudo</button>
+  </div>
+  <div id="tendencias"></div>
+
+  <details class="backup">
+    <summary>Backup dos dados</summary>
+    <p>Os lançamentos ficam salvos neste dispositivo. Copie o texto para guardar em outro lugar, ou cole um backup anterior e importe para restaurar.</p>
+    <textarea id="backup-txt" aria-label="Backup dos dados em formato JSON"></textarea>
+    <div class="acoes" style="margin-top:10px">
+      <button class="sec" id="btn-exportar">Gerar backup</button>
+      <button class="sec" id="btn-importar">Importar do campo</button>
+    </div>
+  </details>
+</section>
+
+<section id="relatorio" class="rel" aria-hidden="true"></section>
+
+<footer>
+  O painel não se atualiza sozinho. O botão de busca consulta a web no momento do clique; o resto você lança à mão, com data retroativa se quiser reconstruir a série. Cada indicador traz um selo de confiança da fonte: onde há divergência entre provedores, o selo está marcado e o número deve ser lido como ordem de grandeza. O histórico guarda até 400 lançamentos por indicador e fica salvo apenas neste dispositivo.
+</footer>
+
+</div>
+
+<script type="module">
+const CHAVE = 'painel-ormuz-v4';
+const ANTIGAS = ['painel-ormuz-v3','painel-ormuz-v2'];
+
+const INDICADORES = [
+  {
+    grupo:'Preço',
+    desc:'Cru e derivado se descolaram. Acompanhe os dois separadamente; eles não respondem mais aos mesmos drivers.',
+    itens:[
+      { id:'brent', nome:'Brent, contrato à vista', dica:'Referência global', unidade:'US$/bbl',
+        dir:'alta-ruim', t1:80, t2:95, min:60, max:120, confianca:'alta',
+        ref:'88,10 no fechamento de 28 de agosto. Máxima da guerra em 126, mínima em 69 no dia 2 de julho.',
+        leitura:'Abaixo de 80 indica prêmio de risco em dissolução. O cru vem rebalanceando por conta própria, então a direção provável até dezembro é lateral a baixa.',
+        fonte:'Oilprice', url:'https://oilprice.com/futures/brent/' },
+      { id:'crack', nome:'Crack de diesel, Noroeste da Europa', dica:'Margem do destilado sobre o cru', unidade:'US$/bbl',
+        dir:'alta-ruim', t1:25, t2:40, min:10, max:70, confianca:'media',
+        ref:'Margens do Atlântico em máxima histórica em julho. Diesel na Europa 40% mais caro desde meados de junho. Futuros de diesel nos EUA subiram 7,4% em uma semana em agosto.',
+        leitura:'O indicador mais importante do painel para o inverno. Tem três drivers independentes: refino russo destruído, ataques houthis a refino saudita e Ormuz. Reabrir o estreito não resolve.',
+        fonte:'Argus Media', url:'https://www.argusmedia.com/' },
+      { id:'cambio', nome:'Real por dólar', dica:'Multiplicador do repasse interno', unidade:'R$',
+        dir:'alta-ruim', t1:5.30, t2:5.70, min:4.80, max:6.20, confianca:'alta',
+        ref:'Cerca de 5,19 no fim de agosto.',
+        leitura:'Câmbio valorizado vem absorvendo parte da alta. Se o real ceder junto com o diesel, o repasse dobra.',
+        fonte:'Investing', url:'https://www.investing.com/currencies/usd-brl' }
+    ]
+  },
+  {
+    grupo:'Estoques e refino',
+    desc:'Aqui está o gargalo real. O cru está folgado, o destilado está no menor nível sazonal já registrado.',
+    itens:[
+      { id:'distdesvio', nome:'Destilados nos EUA contra a média de 5 anos', dica:'Divulgado às quartas', unidade:'%',
+        dir:'baixa-ruim', t1:-5, t2:-12, min:-25, max:5, confianca:'alta',
+        ref:'14% abaixo da média de cinco anos na semana encerrada em 21 de agosto, com queda de 2,2 milhões de barris. Menor nível sazonal já registrado.',
+        leitura:'Indicador central do painel. Use o percentual, não o volume absoluto, porque a comparação sazonal é o que importa.',
+        fonte:'EIA Weekly Petroleum Status Report', url:'https://www.eia.gov/petroleum/supply/weekly/' },
+      { id:'crudesvio', nome:'Petróleo cru nos EUA contra a média de 5 anos', dica:'Divulgado às quartas', unidade:'%',
+        dir:'baixa-ruim', t1:0, t2:-5, min:-15, max:10, confianca:'alta',
+        ref:'1% acima da média na semana encerrada em 21 de agosto, com 428,9 milhões de barris, depois de três altas seguidas de 17,4, 4,4 e 0,1 milhão.',
+        leitura:'Substitui o indicador de volume absoluto da versão anterior, que estava calibrado na direção errada. O cru deixou de ser a restrição.',
+        fonte:'EIA Weekly Petroleum Status Report', url:'https://www.eia.gov/petroleum/supply/weekly/' },
+      { id:'refinorussia', nome:'Processamento de refino da Rússia', dica:'Alvo de ataques desde março', unidade:'mi b/d',
+        dir:'baixa-ruim', t1:4.8, t2:4.2, min:3.0, max:6.0, confianca:'media',
+        ref:'3,91 milhões de b/d no início de julho, menor nível em 21 anos e mais de 1,4 milhão abaixo da média do ano anterior. Foram 21 ataques a refinarias só em agosto.',
+        leitura:'A Rússia respondia por cerca de 10% da oferta global de diesel antes dos ataques. Capacidade destruída fisicamente não volta rápido.',
+        fonte:'Energy Aspects, via Bloomberg', url:'https://www.reuters.com/business/energy/' },
+      { id:'spr', nome:'Reserva Estratégica dos EUA', dica:'Munição que resta a Washington', unidade:'mi bbl',
+        dir:'baixa-ruim', t1:330, t2:280, min:200, max:450, confianca:'alta',
+        ref:'289,7 milhões de barris em 21 de agosto, 41% da capacidade, após saque de aproximadamente 122 milhões desde 28 de fevereiro.',
+        leitura:'Recomposição em curso sinaliza que Washington espera crise prolongada. Há divergência entre fontes sobre o tamanho da liberação coordenada da AIE, entre 172 e 400 milhões de barris.',
+        fonte:'EIA e DOE', url:'https://www.eia.gov/petroleum/supply/weekly/' },
+      { id:'coberturadiesel', nome:'Cobertura de diesel da OCDE', dica:'Dias de demanda em estoque', unidade:'dias',
+        dir:'baixa-ruim', t1:27, t2:22, min:15, max:35, confianca:'baixa',
+        ref:'Cerca de 27 dias em maio. Abaixo de 25 o consumo de estoque historicamente vira pico de preço; 20 é o nível crítico. Número de fonte única e sem atualização recente confirmada.',
+        leitura:'Estoques governamentais da OCDE no menor nível desde dezembro de 1990.',
+        fonte:'IEA Oil Market Report', url:'https://www.iea.org/topics/oil-market-report' }
+    ]
+  },
+  {
+    grupo:'Fluxo físico',
+    desc:'Os dados mais frágeis do painel. Provedores divergem em ordem de grandeza porque parte da frota transita com transponder desligado.',
+    itens:[
+      { id:'travessias', nome:'Travessias diárias em Ormuz', dica:'Série PortWatch, base 85 por dia', unidade:'travessias',
+        dir:'baixa-ruim', t1:60, t2:20, min:0, max:100, confianca:'baixa',
+        ref:'3 travessias em 23 de agosto pelo PortWatch, contra base pré-crise de 85 por dia. O TankerMap reportava cerca de 21 por dia no mesmo período, e outros monitores contam embarcações dentro da zona, não travessias.',
+        leitura:'Use sempre a mesma fonte, porque a série só tem sentido comparada consigo mesma. Qualquer contagem é piso, não medida, já que muitos navios desligam o AIS.',
+        fonte:'IMF PortWatch', url:'https://en.macromicro.me/charts/94482/imf-strait-of-hormuz-number-of-ships-and-transit-volume' },
+      { id:'babmandeb', nome:'Travessias em Bab el-Mandeb', dica:'Rota alternativa para a Ásia', unidade:'navios',
+        dir:'baixa-ruim', t1:40, t2:25, min:0, max:60, confianca:'baixa',
+        ref:'29 embarcações em 21 de julho, contra 41 no dia anterior. Houthis declararam bloqueio no fim de julho e atacaram instalação de refino saudita em agosto.',
+        leitura:'Se fechar junto com Ormuz, não há rota substituta.',
+        fonte:'S&P Global', url:'https://www.spglobal.com/energy/en/news-research/latest-news/shipping' },
+      { id:'seguro', nome:'Prêmio de seguro de guerra', dica:'Percentual do valor do casco', unidade:'%',
+        dir:'alta-ruim', t1:1, t2:5, min:0, max:12, confianca:'baixa',
+        ref:'Entre 3% e 10% em julho, contra 0,25% antes da guerra. Fonte única, sem confirmação independente.',
+        leitura:'Costuma se mover dias antes do barril. Reflete não só o estreito, mas o fato de terminais e portos do Golfo terem virado alvo.',
+        fonte:'Marsh, via S&P', url:'https://www.spglobal.com/energy/en/news-research/latest-news/shipping' },
+      { id:'seguroporto', nome:'Seguro para atracação em portos do Golfo', dica:'Kuwait e Bahrein, % do valor do casco', unidade:'%',
+        dir:'alta-ruim', t1:2, t2:6, min:0, max:15, confianca:'baixa',
+        ref:'Indicador criado em 8 de setembro de 2026, sem série histórica. A Guarda Revolucionária ameaçou atacar petroleiros atracados ou fundeados em portos do Kuwait e do Bahrein.',
+        leitura:'Substitui travessias em Ormuz como principal indicador antecedente de ruptura sistêmica. Seguradora reprecifica antes do evento, não depois. Alta forte aqui antecede o cenário de Brent acima de 130.',
+        fonte:'Corretoras de seguro marítimo, via S&P', url:'https://www.spglobal.com/energy/en/news-research/latest-news/shipping' },
+      { id:'td3c', nome:'Frete VLCC Golfo Pérsico para Ásia', dica:'Rota TD3C, em Worldscale', unidade:'WS',
+        dir:'alta-ruim', t1:80, t2:150, min:20, max:300, confianca:'media',
+        ref:'Referência diária do Baltic Exchange e base dos derivativos de frete em ICE e CME.',
+        leitura:'Sobe quando o armador recusa a travessia mesmo com cobertura disponível.',
+        fonte:'Baltic Exchange', url:'https://www.balticexchange.com/' }
+    ]
+  },
+  {
+    grupo:'Reconfiguração da oferta',
+    desc:'Onde se decide 2027. Aqui o risco não é preço alto, é preço baixo sem ninguém administrando.',
+    itens:[
+      { id:'venezuela', nome:'Produção da Venezuela', dica:'Meta do acordo com os EUA acima de 1,5', unidade:'mi b/d',
+        dir:'dois-lados', t1:1.20, t2:1.60, e1:1.00, e2:2.00, min:0.8, max:2.2, confianca:'media',
+        ref:'Cerca de 1,23 milhão de b/d no fim de agosto, patamar sustentado há aproximadamente 240 dias. O acordo de 28 de agosto mira mais de 1,5 milhão, com horizonte de 25 anos.',
+        leitura:'Abaixo de 1,2 a oferta segue curta e a promessa não se materializou. Acima de 1,6 o mercado gira para excedente, junto com a capacidade do Golfo voltando e os Emirados sem cota.',
+        fonte:'Reuters e OPEP', url:'https://www.reuters.com/business/energy/' }
+    ]
+  },
+  {
+    grupo:'Repasse no Brasil',
+    desc:'A exposição brasileira é diesel e fertilizante, não barril. Brent caindo não é boa notícia se o destilado continuar apertado.',
+    itens:[
+      { id:'ureia', nome:'Ureia posta no Brasil', dica:'CFR, principal fonte de nitrogênio', unidade:'US$/t',
+        dir:'alta-ruim', t1:500, t2:650, min:300, max:850, confianca:'media',
+        ref:'Média de importação de 491,7 por tonelada em março, maior valor mensal desde dezembro de 2022. Chegou perto de 800 em abril e recuou depois.',
+        leitura:'O canal principal é gás natural, que responde por 60% a 80% do custo de nitrogenados, não frete. Ormuz concentra mais de 40% das exportações globais de ureia e cerca de metade do enxofre.',
+        fonte:'Farmnews', url:'https://www.farmnews.com.br/' },
+      { id:'diesel', nome:'Diesel S-10 na bomba', dica:'Média nacional semanal', unidade:'R$/L',
+        dir:'alta-ruim', t1:6.40, t2:7.20, min:5.50, max:8.50, confianca:'alta',
+        ref:'Lance a média da ANP. O IPCA-15 de agosto caiu 0,40%, em parte por combustíveis mais baratos.',
+        leitura:'Elo final da cadeia e o que define a reação política, com primeiro turno da eleição em 4 de outubro.',
+        fonte:'ANP', url:'https://www.gov.br/anp/pt-br' },
+      { id:'defasagem', nome:'Defasagem do diesel contra a paridade', dica:'Preço interno menos importação', unidade:'%',
+        dir:'baixa-ruim', t1:-5, t2:-15, min:-35, max:15, confianca:'media',
+        ref:'Use valor negativo quando o preço interno estiver abaixo da paridade.',
+        leitura:'Defasagem funda inviabiliza a arbitragem do importador privado e antecipa escassez regional antes de aparecer preço.',
+        fonte:'Abicom', url:'https://www.abicom.com.br/' }
+    ]
+  }
+];
+
+const MARCOS = [
+  { id:'embargorusso', titulo:'Embargo russo de exportação de diesel',
+    desc:'Proibição integral anunciada em 9 de julho após ataques ucranianos às refinarias. Governo russo avalia estender até 1º de outubro, e há relato de discussão para manter até o fim do ano. É o evento com data mais previsível do calendário.',
+    padrao:'Em vigor. Decisão de prorrogação pendente, com prazo em 1º de outubro.' },
+  { id:'portosgolfo', titulo:'Ameaça a petroleiros em portos do Golfo',
+    desc:'Em 8 de setembro a Guarda Revolucionária advertiu tripulações de petroleiros próximos a portos do Kuwait e do Bahrein a abandonarem as embarcações, atracadas ou fundeadas, porque seriam alvos. Atinge carregamento e não passagem, e alcança terceiros não beligerantes.',
+    padrao:'Ameaça declarada em 8 de setembro. Sem execução registrada até o momento.' },
+  { id:'contencao', titulo:'Contenção geográfica do conflito',
+    desc:'Em 8 de setembro o Irã lançou 20 mísseis balísticos contra a Base Aérea Muwaffaq Salti, na Jordânia, com 18 interceptados. Rompe o pressuposto de que o conflito ficaria confinado ao Golfo Pérsico e ao Mar Vermelho.',
+    padrao:'Rompida em 8 de setembro. Ataque à Jordânia sem vítimas.' },
+  { id:'kharg', titulo:'Infraestrutura petrolífera de Kharg',
+    desc:'Os EUA bombardearam mais de 90 sítios militares na ilha em 13 de março e pouparam explicitamente a infraestrutura de petróleo, condicionando a decisão ao comportamento iraniano em Ormuz. Kharg escoa cerca de 90% das exportações iranianas.',
+    padrao:'Preservada. Alavanca de escalada ainda disponível.' },
+  { id:'rota', titulo:'Rota reconhecida em Ormuz',
+    desc:'Disputa entre o corredor por águas iranianas, obrigatório desde 19 de junho, e a rota Omã-IMO junto à costa omanense.',
+    padrao:'Indefinido. Acordo Irã-Omã de 26 de agosto é temporário e condicionado à aceitação americana.' },
+  { id:'opep', titulo:'Composição da OPEP',
+    desc:'Emirados saíram em 1º de maio levando parte relevante da capacidade ociosa. Venezuela, membro fundador, avalia sair. Iraque sinaliza insatisfação com cotas.',
+    padrao:'Emirados fora desde 1º de maio. Venezuela avaliando saída.' },
+  { id:'imposto', titulo:'Imposto de exportação de petróleo',
+    desc:'Alíquota de 12% sobre o cru, prorrogada pelo Gecex-Camex em 27 de agosto. Vence um mês depois do primeiro turno da eleição.',
+    padrao:'Vigente até 6 de novembro de 2026. Suspenso judicialmente para associadas da Abep.' },
+  { id:'cnpe', titulo:'Decisão do CNPE sobre mistura',
+    desc:'Elevação do anidro na gasolina de 30% para 32% e antecipação do B17. O B17 é hoje mais defensável que o E32, porque o aperto físico está no destilado.',
+    padrao:'Pendente. Sem data de reunião confirmada.' },
+  { id:'eleicoes', titulo:'Calendário eleitoral',
+    desc:'Primeiro turno no Brasil em 4 de outubro, segundo turno em 25 de outubro, eleições de meio de mandato nos EUA em 3 de novembro. Contenção artificial de preço de combustível tende a afrouxar depois dessas datas, justamente quando o colchão de estoques estará mais fino.',
+    padrao:'Janela de maior risco deslocada para dezembro a fevereiro.' },
+  { id:'liderancaira', titulo:'Liderança iraniana',
+    desc:'Mojtaba Khamenei assumiu em 8 de março, foi ferido no ataque de 28 de fevereiro e não faz aparições públicas desde então, comunicando-se por intermediários. Pode não haver contraparte com autoridade para fechar acordo.',
+    padrao:'Ausente publicamente desde março.' }
+];
+
+const TODOS = INDICADORES.flatMap(g => g.itens);
+const PORID = Object.fromEntries(TODOS.map(i => [i.id, i]));
+let dados = { leituras:{}, marcos:{}, atualizadoEm:null };
+let janela = 30;
+
+async function carregar(){
+  let bruto = null;
+  try{ const r = await window.storage.get(CHAVE); if(r && r.value) bruto = r.value; }catch(e){}
+  if(!bruto){
+    for(const k of ANTIGAS){
+      try{ const r = await window.storage.get(k); if(r && r.value){ bruto = r.value; break; } }catch(e){}
+    }
+  }
+  if(bruto){ try{ dados = JSON.parse(bruto); }catch(e){} }
+  if(!dados.leituras) dados.leituras = {};
+  if(!dados.marcos) dados.marcos = {};
+  if(!dados.briefings) dados.briefings = {};
+}
+async function salvar(){
+  try{ await window.storage.set(CHAVE, JSON.stringify(dados)); }
+  catch(e){ msg('Não foi possível salvar neste dispositivo. Use o backup na aba Tendências.'); }
+}
+
+function nivel(item, v){
+  if(v === null || v === undefined || isNaN(v)) return 'vazio';
+  if(item.dir === 'alta-ruim'){
+    if(v < item.t1) return 'ok';
+    if(v <= item.t2) return 'atencao';
+    return 'alerta';
+  }
+  if(item.dir === 'baixa-ruim'){
+    if(v > item.t1) return 'ok';
+    if(v >= item.t2) return 'atencao';
+    return 'alerta';
+  }
+  if(v < item.e1 || v > item.e2) return 'alerta';
+  if(v < item.t1 || v > item.t2) return 'atencao';
+  return 'ok';
+}
+function serie(id){ return (dados.leituras[id] || []).slice().sort((a,b)=>a.d<b.d?-1:1); }
+function ultimo(id){ const h = serie(id); return h.length ? h[h.length-1] : null; }
+function fmt(v){
+  if(v === null || v === undefined || isNaN(v)) return '—';
+  const a = Math.abs(v);
+  const casas = a < 10 ? 2 : (a < 200 ? 1 : 0);
+  return v.toLocaleString('pt-BR',{minimumFractionDigits:casas, maximumFractionDigits:casas});
+}
+function hoje(){ return new Date().toISOString().slice(0,10); }
+function dataBr(iso){ const [a,m,d] = iso.split('-'); return `${d}/${m}`; }
+function diasAtras(n){ const d = new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
+function recorte(h, dias){ if(!dias) return h; const corte = diasAtras(dias); return h.filter(p => p.d >= corte); }
+function variacao(h, dias){
+  if(h.length < 2) return null;
+  const corte = diasAtras(dias);
+  const antes = h.filter(p => p.d <= corte);
+  const base = antes.length ? antes[antes.length-1] : h[0];
+  const fim = h[h.length-1];
+  if(base.d === fim.d) return null;
+  return { abs: fim.v - base.v };
+}
+const ROT_CONF = { alta:'Fonte primária', media:'Fonte secundária', baixa:'Fonte única ou divergente' };
+
+function render(){
+  const cont = document.getElementById('grupos');
+  cont.innerHTML = '';
+  INDICADORES.forEach(g => {
+    const sec = document.createElement('section');
+    sec.className = 'grupo';
+    sec.innerHTML = `<h2>${g.grupo}</h2><p>${g.desc}</p>`;
+    g.itens.forEach(item => sec.appendChild(linha(item)));
+    cont.appendChild(sec);
+  });
+  renderMarcos();
+  renderLeitura();
+  renderTendencias();
+  renderBriefings();
+}
+
+function linha(item){
+  const h = serie(item.id);
+  const reg = h.length ? h[h.length-1] : null;
+  const v = reg ? reg.v : null;
+  const n = nivel(item, v);
+  const ant = h.length > 1 ? h[h.length-2] : null;
+  let deltaTxt = '';
+  if(v !== null && ant){
+    const d = v - ant.v;
+    deltaTxt = `${d>0?'+':(d<0?'−':'')}${fmt(Math.abs(d))} desde ${dataBr(ant.d)}`;
+  } else if(reg){ deltaTxt = `lançado em ${dataBr(reg.d)}`; }
+
+  const v7 = variacao(h,7), v30 = variacao(h,30);
+  const vals = h.map(p=>p.v);
+  const cls = item.confianca === 'alta' ? '' : (item.confianca === 'media' ? 'media' : 'baixa');
+
+  const el = document.createElement('article');
+  el.className = `ind ${n}`;
+  el.innerHTML = `
+    <div class="ind-topo" role="button" tabindex="0" aria-expanded="false">
+      <div class="ind-nome">${item.nome}<small>${item.dica}</small></div>
+      <div>
+        <div class="ind-val ${n}">${fmt(v)}<span class="u">${item.unidade}</span></div>
+        <span class="delta">${deltaTxt}</span>
+      </div>
+    </div>
+    <div class="ind-det">
+      ${escala(item, v)}
+      <span class="selo ${cls}">${ROT_CONF[item.confianca]}</span>
+      <p class="det-txt"><b>Onde estamos:</b> ${item.ref}</p>
+      <p class="det-txt"><b>Como ler:</b> ${item.leitura}</p>
+      <div class="entrada">
+        <input type="text" inputmode="decimal" placeholder="valor" aria-label="Novo valor para ${item.nome}">
+        <input type="date" value="${hoje()}" max="${hoje()}" aria-label="Data do lançamento">
+        <button class="sec">Lançar</button>
+      </div>
+      <p class="dica-data">Mude a data para reconstruir a série com valores antigos.</p>
+      ${h.length ? `<div class="stats">
+        <span>7 dias<b>${v7 ? (v7.abs>0?'+':'')+fmt(v7.abs) : '—'}</b></span>
+        <span>30 dias<b>${v30 ? (v30.abs>0?'+':'')+fmt(v30.abs) : '—'}</b></span>
+        <span>mínima<b>${fmt(Math.min(...vals))}</b></span>
+        <span>máxima<b>${fmt(Math.max(...vals))}</b></span>
+      </div>` : ''}
+      ${grafico(item, h, 0, false)}
+      <p class="fonte">Fonte: <a href="${item.url}" target="_blank" rel="noopener">${item.fonte}</a></p>
+    </div>`;
+
+  const topo = el.querySelector('.ind-topo');
+  const abrir = () => { el.classList.toggle('aberto'); topo.setAttribute('aria-expanded', el.classList.contains('aberto')); };
+  topo.addEventListener('click', abrir);
+  topo.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); abrir(); }});
+
+  const [inputV, inputD] = el.querySelectorAll('.entrada input');
+  const btn = el.querySelector('.entrada button');
+  const lancar = async () => {
+    const num = parseFloat(inputV.value.replace(',','.').replace(/[^0-9.\-]/g,''));
+    if(isNaN(num)){ msg('Valor não reconhecido.'); return; }
+    registrar(item.id, num, inputD.value || hoje());
+    await salvar(); render(); msg(`${item.nome} atualizado.`);
+  };
+  btn.addEventListener('click', lancar);
+  inputV.addEventListener('keydown', e => { if(e.key==='Enter') lancar(); });
+  return el;
+}
+
+function registrar(id, v, data){
+  if(!dados.leituras[id]) dados.leituras[id] = [];
+  const h = dados.leituras[id];
+  const d = data || hoje();
+  const ja = h.find(p => p.d === d);
+  if(ja) ja.v = v; else h.push({d, v});
+  h.sort((a,b)=>a.d<b.d?-1:1);
+  if(h.length > 400) h.splice(0, h.length - 400);
+  dados.atualizadoEm = new Date().toISOString();
+}
+
+function escala(item, v){
+  const {min,max,dir} = item;
+  const p = x => Math.max(0, Math.min(100, ((x-min)/(max-min))*100));
+  let barras, rot;
+  if(dir === 'alta-ruim'){
+    barras = `<span class="f-ok" style="width:${p(item.t1)}%"></span><span class="f-at" style="width:${p(item.t2)-p(item.t1)}%"></span><span class="f-al" style="width:${100-p(item.t2)}%"></span>`;
+    rot = `${fmt(item.t1)} · ${fmt(item.t2)}`;
+  } else if(dir === 'baixa-ruim'){
+    barras = `<span class="f-al" style="width:${p(item.t2)}%"></span><span class="f-at" style="width:${p(item.t1)-p(item.t2)}%"></span><span class="f-ok" style="width:${100-p(item.t1)}%"></span>`;
+    rot = `${fmt(item.t2)} · ${fmt(item.t1)}`;
+  } else {
+    barras = `<span class="f-al" style="width:${p(item.e1)}%"></span><span class="f-at" style="width:${p(item.t1)-p(item.e1)}%"></span><span class="f-ok" style="width:${p(item.t2)-p(item.t1)}%"></span><span class="f-at" style="width:${p(item.e2)-p(item.t2)}%"></span><span class="f-al" style="width:${100-p(item.e2)}%"></span>`;
+    rot = `${fmt(item.t1)} a ${fmt(item.t2)}`;
+  }
+  const marcador = (v!==null && !isNaN(v)) ? `<div class="marcador"><i style="left:${p(v)}%"></i></div>` : '';
+  return `<div class="faixa">${barras}</div>${marcador}<div class="faixa-rot"><span>${fmt(min)}</span><span>${rot}</span><span>${fmt(max)}</span></div>`;
+}
+
+function grafico(item, hCompleto, dias, alto){
+  const h = recorte(hCompleto, dias);
+  if(h.length < 2) return `<p class="vazio-txt">A curva aparece a partir do segundo lançamento${dias?' dentro do período':''}.</p>`;
+  const vals = h.map(p=>p.v);
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  [item.t1,item.t2].forEach(m => { if(m > lo-(hi-lo||1)*2 && m < hi+(hi-lo||1)*2){ lo=Math.min(lo,m); hi=Math.max(hi,m); }});
+  const folga = (hi-lo)*0.12 || Math.abs(hi*0.05) || 1;
+  lo -= folga; hi += folga;
+  const span = (hi-lo) || 1, W = 100, H = 100;
+  const y = val => H - ((val-lo)/span)*H;
+  const x = i => (i/(h.length-1))*W;
+  const pts = h.map((p,i)=>`${x(i).toFixed(2)},${y(p.v).toFixed(2)}`).join(' ');
+  const ult = h[h.length-1];
+  const lm = (val,cor) => (val>lo && val<hi) ? `<line x1="0" y1="${y(val).toFixed(2)}" x2="${W}" y2="${y(val).toFixed(2)}" stroke="${cor}" stroke-width="1" stroke-dasharray="3 3" vector-effect="non-scaling-stroke" opacity=".55"/>` : '';
+  return `<div class="grafico${alto?' alto':''}">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Série de ${h.length} lançamentos de ${item.nome}">
+      ${lm(item.t1,'#B0761A')}${lm(item.t2, item.dir==='dois-lados'?'#B0761A':'#A81E68')}
+      <polygon points="${pts} ${W},${H} 0,${H}" fill="#12303B" opacity=".06"/>
+      <polyline points="${pts}" fill="none" stroke="#12303B" stroke-width="1.4" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+      <circle cx="${x(h.length-1).toFixed(2)}" cy="${y(ult.v).toFixed(2)}" r="2.4" fill="#12303B" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <div class="eixo"><span>${dataBr(h[0].d)}</span><span>${h.length} lançamentos</span><span>${dataBr(ult.d)}</span></div>
+  </div>`;
+}
+
+function renderMarcos(){
+  const cont = document.getElementById('marcos');
+  cont.innerHTML = '';
+  MARCOS.forEach(m => {
+    const el = document.createElement('div');
+    el.className = 'marco';
+    const valor = dados.marcos[m.id] || m.padrao;
+    el.innerHTML = `<h3>${m.titulo}</h3><p>${m.desc}</p><input type="text" value="${valor.replace(/"/g,'&quot;')}" aria-label="Situação de ${m.titulo}">`;
+    el.querySelector('input').addEventListener('change', async e => {
+      dados.marcos[m.id] = e.target.value; await salvar(); msg('Marco atualizado.');
+    });
+    cont.appendChild(el);
+  });
+}
+
+function renderLeitura(){
+  const niveis = TODOS.map(i => nivel(i, ultimo(i.id)?.v ?? null));
+  const preench = niveis.filter(n => n !== 'vazio');
+  const el = document.getElementById('leitura-val');
+  const det = document.getElementById('leitura-det');
+  if(!preench.length){
+    el.textContent = 'Sem dados';
+    det.textContent = 'Busque as cotações ou lance os valores manualmente.';
+    return;
+  }
+  const al = niveis.filter(n=>n==='alerta').length;
+  const at = niveis.filter(n=>n==='atencao').length;
+  if(al >= 4) el.textContent = 'Reescalada';
+  else if(al >= 2 || at >= 5) el.textContent = 'Tensão elevada';
+  else if(al >= 1 || at >= 1) el.textContent = 'Instabilidade lateral';
+  else el.textContent = 'Normalizando';
+  const q = dados.atualizadoEm ? new Date(dados.atualizadoEm).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+  det.textContent = `${al} em alerta, ${at} em atenção, ${preench.length} de ${TODOS.length} preenchidos. Última atualização ${q}.`;
+}
+
+function renderTendencias(){
+  const cont = document.getElementById('tendencias');
+  cont.innerHTML = '';
+  let algum = false;
+  TODOS.forEach(item => {
+    const h = serie(item.id);
+    if(!h.length) return;
+    algum = true;
+    const rec = recorte(h, janela);
+    const vals = rec.map(p=>p.v);
+    const ult = h[h.length-1];
+    const n = nivel(item, ult.v);
+    const varP = rec.length > 1 ? ult.v - rec[0].v : null;
+    const el = document.createElement('article');
+    el.className = 'tend-item';
+    el.innerHTML = `
+      <div class="tend-topo"><h3>${item.nome}</h3>
+        <span class="ind-val ${n}">${fmt(ult.v)}<span class="u">${item.unidade}</span></span></div>
+      ${grafico(item, h, janela, true)}
+      <div class="stats">
+        <span>no período<b>${varP===null?'—':(varP>0?'+':'')+fmt(varP)}</b></span>
+        <span>mínima<b>${vals.length?fmt(Math.min(...vals)):'—'}</b></span>
+        <span>máxima<b>${vals.length?fmt(Math.max(...vals)):'—'}</b></span>
+        <span>lançamentos<b>${rec.length}</b></span>
+      </div>`;
+    cont.appendChild(el);
+  });
+  if(!algum) cont.innerHTML = '<p class="vazio-txt">Nenhum lançamento ainda. As curvas aparecem conforme você preenche os indicadores.</p>';
+}
+
+function msg(t){ document.getElementById('status-msg').textContent = t; }
+
+const PEDIDO = `Você é um assistente de dados de mercado. Pesquise na web os valores mais recentes disponíveis para cada item e devolva SOMENTE um objeto JSON, sem markdown, sem crase, sem texto antes ou depois.
+
+Chaves:
+"brent": Brent contrato à vista, dólares por barril
+"crack": crack spread do diesel/gasóleo no Noroeste da Europa, dólares por barril
+"cambio": dólar em reais
+"distdesvio": estoque de destilados dos EUA em relação à média de 5 anos, em percentual, negativo quando abaixo (relatório semanal da EIA)
+"crudesvio": estoque comercial de petróleo dos EUA em relação à média de 5 anos, em percentual, negativo quando abaixo
+"refinorussia": processamento de petróleo nas refinarias russas, milhões de barris por dia
+"spr": volume da Reserva Estratégica dos EUA, milhões de barris
+"coberturadiesel": cobertura de estoques de diesel da OCDE, dias de demanda
+"travessias": travessias diárias no Estreito de Ormuz segundo o PortWatch do FMI
+"babmandeb": travessias diárias em Bab el-Mandeb
+"seguro": prêmio de seguro de risco de guerra para Ormuz, percentual do valor do casco
+"seguroporto": prêmio de seguro para atracação de petroleiros em portos do Kuwait e do Bahrein, percentual do valor do casco
+"td3c": frete VLCC rota TD3C, pontos Worldscale
+"venezuela": produção de petróleo da Venezuela, milhões de barris por dia
+"ureia": ureia posta no Brasil, CFR, dólares por tonelada
+"diesel": diesel S-10 na bomba no Brasil, reais por litro
+"defasagem": defasagem do diesel brasileiro contra a paridade de importação, percentual, negativo quando abaixo
+
+REGRAS DE SAÍDA, siga à risca:
+- Inclua APENAS as chaves cujo valor você realmente encontrou. Omita as demais por completo, não escreva null.
+- Valores são números puros, sem unidade, sem aspas, sem separador de milhar. Use ponto decimal.
+- Não escreva nenhum texto fora do objeto. Nada de explicação, nada de nota.
+- Priorize nesta ordem, caso o espaço acabe: brent, distdesvio, crudesvio, crack, cambio, spr, travessias, seguro, seguroporto, venezuela, refinorussia, ureia, diesel, td3c, babmandeb, coberturadiesel, defasagem.
+Exemplo de saída válida: {"brent":88.1,"cambio":5.19,"spr":289.7}`;
+
+async function buscar(){
+  const btn = document.getElementById('btn-buscar');
+  btn.disabled = true;
+  msg('Consultando fontes na web. Costuma levar de trinta segundos a um minuto.');
+  let diag = '';
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:1000,
+        messages:[{role:'user', content:PEDIDO}],
+        tools:[{type:'web_search_20250305', name:'web_search'}]
+      })
+    });
+    diag = 'HTTP ' + resp.status;
+    const cru = await resp.text();
+    guardarCru(cru.slice(0, 4000));
+    if(!resp.ok) throw new Error(diag);
+    const data = JSON.parse(cru);
+    if(data.stop_reason) diag += ' · stop: ' + data.stop_reason;
+    const texto = (data.content||[]).filter(b => b.type === 'text').map(b => b.text).join('\n');
+    if(!texto.trim()) throw new Error(diag + ' · resposta sem texto');
+    const obj = extrairNumeros(texto);
+    let n = 0;
+    TODOS.forEach(item => {
+      const v = obj[item.id];
+      if(typeof v === 'number' && isFinite(v)){ registrar(item.id, v, hoje()); n++; }
+    });
+    await salvar(); render();
+    if(n === 0){
+      msg('A resposta chegou mas nenhum número foi reconhecido. ' + diag + '. Veja a resposta bruta abaixo do painel.');
+    } else {
+      const truncou = data.stop_reason === 'max_tokens';
+      msg(`${n} de ${TODOS.length} preenchidos.` + (truncou ? ' A resposta foi cortada por limite de tamanho; rode de novo para completar o resto.' : ' Complete o resto à mão.'));
+    }
+  }catch(e){
+    msg('A busca falhou. ' + (diag || e.message) + '. A resposta bruta ficou guardada abaixo do painel para diagnóstico.');
+  }finally{ btn.disabled = false; }
+}
+
+// Extrai pares "chave": numero mesmo de JSON incompleto ou truncado
+function extrairNumeros(texto){
+  const obj = {};
+  const limpo = texto.replace(/```json|```/g, '');
+  const re = /"([a-zA-Z_]+)"\s*:\s*(-?\d+(?:\.\d+)?)/g;
+  let m;
+  while((m = re.exec(limpo)) !== null){
+    const v = parseFloat(m[2]);
+    if(isFinite(v)) obj[m[1]] = v;
+  }
+  return obj;
+}
+
+function guardarCru(txt){
+  dados.ultimaResposta = { em: new Date().toISOString(), txt };
+  const el = document.getElementById('cru-txt');
+  if(el) el.value = txt;
+}
+
+
+/* ---------- briefing diário ---------- */
+const PEDIDO_BRIEF = `Você é analista de inteligência de mercado de energia e bioinsumos. Faça uma varredura das notícias das últimas 24 a 48 horas e devolva SOMENTE um objeto JSON, sem markdown, sem crase, sem texto antes ou depois.
+
+Contexto: acompanhamos o choque energético iniciado com o fechamento do Estreito de Ormuz em fevereiro de 2026. A tese central é que petróleo cru e diesel se descolaram, e que a escassez migrou do recurso para a capacidade de conversão.
+
+Busque sinais nestas sete frentes:
+1. Fluxo físico e segurança marítima: travessias em Ormuz, Bab el-Mandeb, seguro de guerra, seguro de atracação, ataques a navios em trânsito ou atracados, ameaças a portos do Kuwait, Bahrein, Catar e Arábia Saudita, escolta naval, ataques a infraestrutura energética, extensão geográfica do conflito para fora do Golfo
+2. Refino e destilados: refinarias russas, embargo russo de diesel, estoques de destilado, margens de refino, capacidade de refino
+3. Governança da oferta: OPEP, saídas de membros, Venezuela, Aramco, capacidade ociosa, decisões de produção
+4. Eletricidade e data centers: turbinas a gás, preço de capacidade, leilões, curtailment no Brasil, Redata, PL 278/2026
+5. Carbono e regulação: CBAM, SBCE, preço de certificado, EU ETS, mercado voluntário
+6. Bioinsumos: biocarbono, biochar, HVO, biometano, pellets, offtakes, entrada de tradings globais, preço de matéria-prima
+7. Brasil: imposto de exportação de petróleo, CNPE, mistura de biocombustíveis, ANP, preço de diesel, fertilizantes
+
+Regras rígidas:
+- Só inclua o que muda alguma conclusão ou número. Notícia genérica de contexto não entra.
+- Cite sempre a FONTE PRIMÁRIA (Bloomberg, Reuters, EIA, AIE, GASTAT, ANP, agência oficial), nunca o agregador que republicou.
+- Se não encontrar nada relevante, devolva a lista vazia. Dia sem sinal é resultado válido.
+- Máximo de TRÊS sinais, os mais relevantes. Cada campo em no máximo 20 palavras.
+- Não escreva nada fora do objeto JSON.
+
+Formato:
+{"sinais":[{"titulo":"","fonte":"","dado":"","implicacao":"","frente":"","relevancia":"alto|medio|baixo"}]}`;
+
+async function gerarBriefing(){
+  const btn = document.getElementById('btn-brief');
+  btn.disabled = true;
+  bmsg('Varrendo fontes. Costuma levar de um a dois minutos.');
+  let diag = '';
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:1000,
+        messages:[{role:'user', content:PEDIDO_BRIEF}],
+        tools:[{type:'web_search_20250305', name:'web_search'}]
+      })
+    });
+    diag = 'HTTP ' + resp.status;
+    const cru = await resp.text();
+    guardarCru(cru.slice(0, 4000));
+    if(!resp.ok) throw new Error(diag);
+    const data = JSON.parse(cru);
+    if(data.stop_reason) diag += ' · stop: ' + data.stop_reason;
+    const texto = (data.content||[]).filter(b => b.type === 'text').map(b => b.text).join('\n');
+    if(!texto.trim()) throw new Error(diag + ' · resposta sem texto');
+    const sinais = extrairSinais(texto);
+    if(!dados.briefings) dados.briefings = {};
+    dados.briefings[hoje()] = { sinais, resumo:'', em: new Date().toISOString() };
+    const chaves = Object.keys(dados.briefings).sort();
+    while(chaves.length > 60){ delete dados.briefings[chaves.shift()]; }
+    await salvar();
+    renderBriefings();
+    if(sinais.length) bmsg(`${sinais.length} sinal${sinais.length>1?'is':''} registrado${sinais.length>1?'s':''}. ${diag}`);
+    else bmsg('Nenhum sinal reconhecido na resposta. ' + diag + '. Veja a resposta bruta abaixo do painel.');
+  }catch(e){
+    bmsg('A varredura falhou. ' + (diag || e.message) + '. A resposta bruta ficou guardada abaixo do painel.');
+  }finally{ btn.disabled = false; }
+}
+
+// Aceita JSON completo; se vier truncado, recupera os objetos de sinal já fechados
+function extrairSinais(texto){
+  const limpo = texto.replace(/```json|```/g, '').trim();
+  const i0 = limpo.indexOf('{'), i1 = limpo.lastIndexOf('}');
+  if(i0 >= 0 && i1 > i0){
+    try{
+      const obj = JSON.parse(limpo.slice(i0, i1+1));
+      if(Array.isArray(obj.sinais)) return obj.sinais.slice(0,3);
+    }catch(e){ /* segue para recuperação parcial */ }
+  }
+  const out = [];
+  const re = /\{[^{}]*"titulo"[^{}]*\}/g;
+  let m;
+  while((m = re.exec(limpo)) !== null && out.length < 3){
+    try{ out.push(JSON.parse(m[0])); }catch(e){}
+  }
+  return out;
+}
+
+function renderBriefings(){
+  const cont = document.getElementById('briefings');
+  cont.innerHTML = '';
+  const dias = Object.keys(dados.briefings || {}).sort().reverse();
+  if(!dias.length){
+    cont.innerHTML = '<p class="vazio-txt">Nenhuma varredura ainda. O histórico se acumula a cada execução e guarda os últimos 60 dias.</p>';
+    return;
+  }
+  dias.forEach(d => {
+    const b = dados.briefings[d];
+    const bloco = document.createElement('section');
+    bloco.className = 'dia';
+    const quando = b.em ? new Date(b.em).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '';
+    bloco.innerHTML = `<div class="dia-cab"><h3>${dataBr(d)}</h3><span>${b.sinais.length} sinais · ${quando}</span></div>`;
+    if(b.resumo){
+      const r = document.createElement('p');
+      r.className = 'nota-brief';
+      r.style.marginBottom = '12px';
+      r.textContent = b.resumo;
+      bloco.appendChild(r);
+    }
+    if(!b.sinais.length){
+      const v = document.createElement('p');
+      v.className = 'vazio-dia';
+      v.textContent = 'Nenhum sinal que altere as conclusões do documento.';
+      bloco.appendChild(v);
+    }
+    b.sinais.forEach(s => {
+      const el = document.createElement('article');
+      const rel = (s.relevancia || 'medio').toLowerCase();
+      el.className = `sinal ${rel === 'alto' ? 'alto' : rel === 'baixo' ? 'baixo' : 'medio'}`;
+      el.innerHTML = `<h4></h4><p class="d"></p><p class="i"></p>
+        <div class="sinal-meta"><span>Fonte: <b class="f"></b></span><span>Frente: <b class="fr"></b></span><span>Relevância: <b class="r"></b></span></div>`;
+      el.querySelector('h4').textContent = s.titulo || 'Sem título';
+      el.querySelector('.d').textContent = s.dado || '';
+      el.querySelector('.i').textContent = s.implicacao ? `O que muda: ${s.implicacao}` : '';
+      el.querySelector('.f').textContent = s.fonte || 'não informada';
+      el.querySelector('.fr').textContent = s.frente || '';
+      el.querySelector('.r').textContent = rel;
+      bloco.appendChild(el);
+    });
+    cont.appendChild(bloco);
+  });
+}
+
+function bmsg(t){ document.getElementById('brief-msg').textContent = t; }
+
+document.getElementById('btn-brief').addEventListener('click', gerarBriefing);
+document.getElementById('btn-brief-limpar').addEventListener('click', async () => {
+  dados.briefings = {};
+  await salvar();
+  renderBriefings();
+  bmsg('Histórico de briefings apagado.');
+});
+
+
+/* ---------- Relatório estático para PDF ---------- */
+function montarRelatorio(){
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const agora = new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  let h = `<div class="rel-cab"><h1>Painel Ormuz</h1>
+    <p class="sub">Risco energético e repasse para custo no Brasil · emitido em ${agora}</p></div>`;
+
+  h += `<div class="rel-leitura"><b>${esc(document.getElementById('leitura-val').textContent)}</b><br>
+    ${esc(document.getElementById('leitura-det').textContent)}</div>`;
+
+  INDICADORES.forEach(g => {
+    const comDado = g.itens;
+    h += `<h2>${esc(g.grupo)}</h2>`;
+    h += `<table class="rel-t"><thead><tr>
+      <th>Indicador</th><th>Unid.</th><th style="text-align:right">Atual</th>
+      <th style="text-align:right">Variação</th><th>Faixa de alerta</th><th>Situação</th><th>Fonte</th>
+    </tr></thead><tbody>`;
+    comDado.forEach(item => {
+      const s = serie(item.id);
+      const reg = s.length ? s[s.length-1] : null;
+      const v = reg ? reg.v : null;
+      const n = nivel(item, v);
+      const ant = s.length > 1 ? s[s.length-2] : null;
+      let d = '—';
+      if(v !== null && ant){
+        const dd = v - ant.v;
+        d = `${dd>0?'+':(dd<0?'−':'')}${fmt(Math.abs(dd))}`;
+      }
+      let faixa;
+      if(item.dir === 'alta-ruim') faixa = `verde < ${fmt(item.t1)} · alerta > ${fmt(item.t2)}`;
+      else if(item.dir === 'baixa-ruim') faixa = `verde > ${fmt(item.t1)} · alerta < ${fmt(item.t2)}`;
+      else faixa = `verde entre ${fmt(item.t1)} e ${fmt(item.t2)}`;
+      const rot = { ok:'Normal', atencao:'Atenção', alerta:'Alerta', vazio:'Sem dado' }[n];
+      const quando = reg ? ` (${dataBr(reg.d)})` : '';
+      h += `<tr>
+        <td>${esc(item.nome)}</td>
+        <td>${esc(item.unidade)}</td>
+        <td class="n ${n}">${fmt(v)}${esc(quando)}</td>
+        <td class="n">${esc(d)}</td>
+        <td>${esc(faixa)}</td>
+        <td class="${n}">${rot}</td>
+        <td>${esc(item.fonte)} · ${esc(ROT_CONF[item.confianca])}</td>
+      </tr>`;
+    });
+    h += `</tbody></table>`;
+  });
+
+  h += `<h2>Marcos e datas</h2>`;
+  MARCOS.forEach(m => {
+    h += `<div class="rel-marco"><b>${esc(m.titulo)}</b>${esc(dados.marcos[m.id] || m.padrao)}</div>`;
+  });
+
+  const dias = Object.keys(dados.briefings || {}).sort().reverse().slice(0, 7);
+  if(dias.length){
+    h += `<h2>Briefing dos últimos dias</h2>`;
+    dias.forEach(d => {
+      const b = dados.briefings[d];
+      h += `<div class="rel-marco"><b>${dataBr(d)} · ${b.sinais.length} sinais</b></div>`;
+      if(!b.sinais.length) h += `<div class="rel-sinal"><span>Nenhum sinal que altere as conclusões.</span></div>`;
+      b.sinais.forEach(s => {
+        const rel = (s.relevancia || 'medio').toLowerCase();
+        h += `<div class="rel-sinal ${rel==='alto'?'alto':rel==='baixo'?'baixo':'medio'}">
+          <b>${esc(s.titulo)}</b>${esc(s.dado)}<br>
+          <span>O que muda: ${esc(s.implicacao)} · Fonte: ${esc(s.fonte)} · ${esc(s.frente)}</span></div>`;
+      });
+    });
+  }
+
+  h += `<div class="rel-rodape">Indicadores com confiança marcada como fonte única ou divergente devem ser lidos como ordem de grandeza, não como medida.
+  No caso de Ormuz, qualquer contagem é piso, porque parte da frota transita com transponder desligado.
+  Documento de acompanhamento, gerado a partir dos lançamentos registrados neste dispositivo.</div>`;
+
+  document.getElementById('relatorio').innerHTML = h;
+}
+
+document.getElementById('btn-pdf').addEventListener('click', () => {
+  montarRelatorio();
+  msg('Relatório montado. Use Imprimir e escolha Salvar como PDF.');
+  setTimeout(() => window.print(), 250);
+});
+window.addEventListener('beforeprint', montarRelatorio);
+
+function trocarAba(qual){
+  const vistas = { hoje:'vista-hoje', brief:'vista-brief', tend:'vista-tend' };
+  Object.entries(vistas).forEach(([k, id]) => {
+    const sel = k === qual;
+    document.getElementById('aba-' + k).setAttribute('aria-selected', sel);
+    document.getElementById(id).hidden = !sel;
+  });
+  if(qual === 'tend') renderTendencias();
+  if(qual === 'brief') renderBriefings();
+}
+document.getElementById('aba-hoje').addEventListener('click', ()=>trocarAba('hoje'));
+document.getElementById('aba-brief').addEventListener('click', ()=>trocarAba('brief'));
+document.getElementById('aba-tend').addEventListener('click', ()=>trocarAba('tend'));
+document.getElementById('periodo').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  janela = parseInt(b.dataset.dias, 10);
+  document.querySelectorAll('#periodo button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  renderTendencias();
+});
+document.getElementById('btn-exportar').addEventListener('click', () => {
+  document.getElementById('backup-txt').value = JSON.stringify(dados);
+  msg('Backup gerado. Copie o texto e guarde onde preferir.');
+});
+document.getElementById('btn-importar').addEventListener('click', async () => {
+  const txt = document.getElementById('backup-txt').value.trim();
+  if(!txt){ msg('Cole um backup no campo antes de importar.'); return; }
+  try{
+    const novo = JSON.parse(txt);
+    if(!novo.leituras) throw new Error('formato');
+    Object.entries(novo.leituras).forEach(([id, pts]) => {
+      if(!PORID[id] || !Array.isArray(pts)) return;
+      pts.forEach(p => { if(p && p.d && typeof p.v === 'number') registrar(id, p.v, p.d); });
+    });
+    Object.assign(dados.marcos, novo.marcos || {});
+    await salvar(); render();
+    msg('Backup importado e mesclado.');
+  }catch(e){ msg('O texto não é um backup válido deste painel.'); }
+});
+document.getElementById('btn-buscar').addEventListener('click', buscar);
+document.getElementById('btn-abrir').addEventListener('click', e => {
+  const abrindo = e.target.textContent === 'Expandir tudo';
+  document.querySelectorAll('.ind').forEach(el => el.classList.toggle('aberto', abrindo));
+  document.querySelectorAll('.ind-topo').forEach(el => el.setAttribute('aria-expanded', abrindo));
+  e.target.textContent = abrindo ? 'Recolher tudo' : 'Expandir tudo';
+});
+
+await carregar();
+render();
+if(dados.ultimaResposta && dados.ultimaResposta.txt){
+  const el = document.getElementById('cru-txt');
+  if(el) el.value = dados.ultimaResposta.txt;
+}
+</script>
+</body>
+</html>

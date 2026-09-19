@@ -1,0 +1,13 @@
+{
+  "_nota": "Eventos datados marcados como linhas verticais nos gráficos. 'curto' é o rótulo no gráfico.",
+  "eventos": [
+    { "d": "2026-02-28", "curto": "Início", "titulo": "Ataque de 28 de fevereiro e início do fechamento de Ormuz" },
+    { "d": "2026-03-13", "curto": "Kharg", "titulo": "EUA bombardeiam sítios militares em Kharg e poupam a infraestrutura de petróleo" },
+    { "d": "2026-05-01", "curto": "EAU saem", "titulo": "Emirados deixam a OPEP" },
+    { "d": "2026-06-19", "curto": "Corredor", "titulo": "Corredor por águas iranianas passa a ser obrigatório" },
+    { "d": "2026-07-09", "curto": "Embargo RU", "titulo": "Rússia proíbe integralmente a exportação de diesel" },
+    { "d": "2026-08-26", "curto": "Irã-Omã", "titulo": "Acordo temporário Irã-Omã sobre a rota" },
+    { "d": "2026-08-28", "curto": "Venezuela", "titulo": "Acordo EUA-Venezuela mira mais de 1,5 mi b/d" },
+    { "d": "2026-09-08", "curto": "Portos", "titulo": "Ameaça a petroleiros em portos do Kuwait e do Bahrein e ataque à Jordânia" }
+  ]
+}

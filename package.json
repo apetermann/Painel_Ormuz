@@ -1,0 +1,15 @@
+{
+  "name": "painel-ormuz",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Painel de acompanhamento do choque energético de 2026, atualizado diariamente via GitHub Actions.",
+  "scripts": {
+    "atualizar": "node scripts/atualizar.mjs",
+    "atualizar:sem-ia": "node scripts/atualizar.mjs --sem-ia",
+    "servir": "npx --yes http-server -c-1 -p 8080 ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0"
+  }
+}

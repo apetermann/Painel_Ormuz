@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.log
+.claude/
+
+# Documentos de análise ficam só na cópia local (repositório público)
+docs/
