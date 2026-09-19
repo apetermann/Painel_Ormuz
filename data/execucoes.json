@@ -1,6 +1,62 @@
 {
  "execucoes": [
   {
+   "em": "2026-09-19T21:41:12.147Z",
+   "data": "2026-09-19",
+   "etapas": [
+    {
+     "etapa": "eia",
+     "status": "ok",
+     "itens": 7,
+     "detalhe": [
+      "brent: 431 pontos, 431 novos ou revisados, último 2026-09-15 = 130.8",
+      "crackny: 417 pontos, 417 novos ou revisados, último 2026-09-15 = 93.4",
+      "distdesvio: 89 pontos, 89 novos ou revisados, último 2026-09-11 = -12.5",
+      "crudesvio: 89 pontos, 89 novos ou revisados, último 2026-09-11 = 1",
+      "spr: 89 pontos, 89 novos ou revisados, último 2026-09-11 = 285",
+      "refinoeua: 89 pontos, 89 novos ou revisados, último 2026-09-11 = 96.8",
+      "demdistdesvio: 89 pontos, 89 novos ou revisados, último 2026-09-11 = -4.5"
+     ]
+    },
+    {
+     "etapa": "bcb",
+     "status": "ok",
+     "itens": 1,
+     "detalhe": [
+      "cambio: 431 pontos, 0 novos, último 2026-09-18 = 5.1575"
+     ]
+    },
+    {
+     "etapa": "cotacoes",
+     "status": "ok",
+     "itens": 5,
+     "detalhe": [
+      "crack: 85.86 (2026-07-30)",
+      "refinorussia: 3.8 (2026-06-01)",
+      "refinomundo: 81.4 (2026-08-01)",
+      "seguro: 10 (2026-07-01)",
+      "venezuela: 1.5 (2026-09-01)"
+     ],
+     "motivo": "end_turn",
+     "bruto": "{\"crack\":85.86,\"crack_data\":\"2026-07-30\",\"refinorussia\":3.8,\"refinorussia_data\":\"2026-06-01\",\"refinomundo\":81.4,\"refinomundo_data\":\"2026-08-01\",\"seguro\":10,\"seguro_data\":\"2026-07-01\",\"td3c\":677.22,\"td3c_data\":\"2026-09-03\",\"venezuela\":1.5,\"venezuela_data\":\"2026-09-01\"}",
+     "tokens": {
+      "entrada": 690621,
+      "saida": 11138
+     }
+    },
+    {
+     "etapa": "briefing",
+     "status": "ok",
+     "itens": 3,
+     "detalhe": [
+      "3 sinais"
+     ],
+     "motivo": "end_turn",
+     "bruto": "{\"sinais\": [{\"titulo\": \"IRGC ataca novo petroleiro em Ormuz; trânsitos dark duplicam\", \"fonte\": \"RFE/RL (via globalsecurity.org) e Windward AI Daily Intelligence, 17-18 set 2026\", \"dado\": \"IRGC atingiu outro petroleiro em 18/9; navios sem AIS em Ormuz dobraram para 12 em 16/9, 11 sem transponder\", \"implicacao\": \"Risco físico segue alto apesar de escolta naval dos EUA; prêmio de seguro de guerra e atracação deve permanecer elevado\", \"frente\": \"Fluxo físico e segurança marítima\", \"relevancia\": \"alto\"}, {\"titulo\": \"Rússia estende embargo de exportação de diesel até final de outubro\", \"fonte\": \"Vedomosti/Reuters, 16 set 2026\", \"dado\": \"3 das 6 maiores refinarias russas de diesel cortaram ou pararam produção em setembro após ataques ucranianos\", \"implicacao\": \"Aperto adicional na oferta global de diesel, reforçando descolamento crude-destilado mesmo com fluxo parcial em Ormuz\", \"frente\": \"Refino e destilados\", \"relevancia\": \"alto\"}, {\"titulo\": \"Governo brasileiro institui subvenção e taxa de exportação sobre diesel e petróleo (MP)\", \"fonte\": \"Planalto, Exposição de Motivos EMI nº 2037/2026, 11 set 2026\", \"dado\": \"Alíquota de 12% sobre exportação de petróleo bruto e 50% sobre diesel; subvenção de até R$0,32/litro a produtores/importadores\", \"implicacao\": \"Governo reconhece oficialmente o descolamento crude-diesel e usa instrumento fiscal para conter repasse da margem de refino ao consumidor\", \"frente\": \"Brasil\", \"relevancia\": \"alto\"}]}"
+    }
+   ]
+  },
+  {
    "em": "2026-09-19T19:17:32.392Z",
    "data": "2026-09-19",
    "etapas": [

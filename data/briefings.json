@@ -3,31 +3,31 @@
   "2026-09-19": {
    "sinais": [
     {
-     "titulo": "Fluxo por Ormuz atinge máxima de seis meses, segundo CENTCOM",
-     "fonte": "Bloomberg / US Central Command (Adm. Brad Cooper, 19/09/2026)",
-     "dado": "Embarques de petróleo e GNL nas últimas duas semanas na máxima de seis meses; faixas principais livres de minas; +1 bilhão de barris escoados; Irã exportando zero",
-     "implicacao": "Prêmio de risco no cru desinfla (Brent US$103,8, terceira queda seguida em 18/09) enquanto cracks de diesel seguem recordes: descolamento cru-destilado se amplia",
-     "frente": "1",
+     "titulo": "IRGC ataca novo petroleiro em Ormuz; trânsitos dark duplicam",
+     "fonte": "RFE/RL (via globalsecurity.org) e Windward AI Daily Intelligence, 17-18 set 2026",
+     "dado": "IRGC atingiu outro petroleiro em 18/9; navios sem AIS em Ormuz dobraram para 12 em 16/9, 11 sem transponder",
+     "implicacao": "Risco físico segue alto apesar de escolta naval dos EUA; prêmio de seguro de guerra e atracação deve permanecer elevado",
+     "frente": "Fluxo físico e segurança marítima",
      "relevancia": "alto"
     },
     {
-     "titulo": "Brasil cria subvenção de R$1/litro no diesel A e defasagem bate recorde",
-     "fonte": "Portaria MF nº 2.813/2026 (Ministério da Fazenda); Petrobras; Abicom",
-     "dado": "Petrobras subiu diesel A rodoviário R$1,00/litro em 17/09, neutralizado por subvenção federal de igual valor; Abicom mede defasagem de R$3,89/litro em 18/09",
-     "implicacao": "Preço interno desconectado do PPI inviabiliza importador, concentra oferta na Petrobras e eleva risco real de desabastecimento de diesel no 4T26",
-     "frente": "7",
+     "titulo": "Rússia estende embargo de exportação de diesel até final de outubro",
+     "fonte": "Vedomosti/Reuters, 16 set 2026",
+     "dado": "3 das 6 maiores refinarias russas de diesel cortaram ou pararam produção em setembro após ataques ucranianos",
+     "implicacao": "Aperto adicional na oferta global de diesel, reforçando descolamento crude-destilado mesmo com fluxo parcial em Ormuz",
+     "frente": "Refino e destilados",
      "relevancia": "alto"
     },
     {
-     "titulo": "Rússia estende embargo de exportação de diesel até 31 de outubro",
-     "fonte": "Vedomosti (decreto governamental nº 1097/2026); Energy Intelligence",
-     "dado": "Proibição a produtores prorrogada até 31/10, com avaliação de estender a janeiro/2027; manutenções adiadas por ataques de drones e importações recordes de diesel",
-     "implicacao": "Retira oferta estrutural de destilado do mercado global no inverno; sustenta cracks acima de US$100/bbl e reforça escassez de capacidade de conversão",
-     "frente": "2",
+     "titulo": "Governo brasileiro institui subvenção e taxa de exportação sobre diesel e petróleo (MP)",
+     "fonte": "Planalto, Exposição de Motivos EMI nº 2037/2026, 11 set 2026",
+     "dado": "Alíquota de 12% sobre exportação de petróleo bruto e 50% sobre diesel; subvenção de até R$0,32/litro a produtores/importadores",
+     "implicacao": "Governo reconhece oficialmente o descolamento crude-diesel e usa instrumento fiscal para conter repasse da margem de refino ao consumidor",
+     "frente": "Brasil",
      "relevancia": "alto"
     }
    ],
-   "em": "2026-09-19T19:22:31.702Z"
+   "em": "2026-09-19T21:49:03.800Z"
   }
  }
 }
