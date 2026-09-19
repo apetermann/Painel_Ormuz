@@ -26,6 +26,7 @@
       <div class="det" id="leitura-det"></div>
     </div>
     <div class="atualizacao" id="atualizacao"></div>
+    <p class="cadencia">Preço do petróleo, estoques e câmbio vêm de API oficial e entram todo dia. Os indicadores que dependem de busca na web são atualizados às segundas, ou quando você usa o botão <b>Atualizar agora</b>.</p>
   </div>
   <div id="aviso-falseamento" class="aviso" hidden></div>
 </header>
@@ -46,6 +47,8 @@
       <button data-dias="0" aria-pressed="false">Tudo</button>
     </div>
     <div class="acoes">
+      <a class="botao" href="https://github.com/apetermann/Painel_Ormuz/actions/workflows/atualizar.yml" target="_blank" rel="noopener"
+         title="Abre o GitHub; lá é preciso clicar em Run workflow. A busca web só roda às segundas e nestas atualizações pedidas à mão.">Atualizar agora</a>
       <button class="sec" id="btn-csv">Baixar CSV</button>
       <button class="sec" id="btn-pdf">Imprimir</button>
     </div>

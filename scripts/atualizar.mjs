@@ -179,34 +179,79 @@ async function etapaBCB() {
 }
 
 // ---------- Claude com busca web ----------
-async function perguntarClaude(pedido, buscas = 8) {
-  const { default: Anthropic } = await import('@anthropic-ai/sdk');
-  const client = new Anthropic();
-  const messages = [{ role: 'user', content: pedido }];
+// Fontes primárias para as cotações. Restringir o domínio corta o texto que entra no
+// contexto (que é de onde vem quase todo o custo) e atende a regra de citar a fonte primária.
+const DOMINIOS_COTACOES = [
+  'eia.gov', 'iea.org', 'reuters.com', 'bloomberg.com', 'argusmedia.com', 'spglobal.com',
+  'balticexchange.com', 'opec.org', 'portwatch.imf.org', 'gov.br', 'abicom.com.br',
+  'farmnews.com.br', 'petrobras.com.br', 'comexstat.mdic.gov.br',
+];
+
+let clienteCache;
+async function cliente() {
+  if (!clienteCache) { const { default: Anthropic } = await import('@anthropic-ai/sdk'); clienteCache = new Anthropic(); }
+  return clienteCache;
+}
+function montarParams(pedido, buscas, dominios) {
   // Haiku só aceita a busca básica; os demais usam a versão com filtragem dinâmica, que corta tokens de entrada.
-  const busca = MODELO.startsWith('claude-haiku') ? 'web_search_20250305' : 'web_search_20260209';
+  const tipo = MODELO.startsWith('claude-haiku') ? 'web_search_20250305' : 'web_search_20260209';
+  const tool = { type: tipo, name: 'web_search', max_uses: buscas };
+  if (dominios) tool.allowed_domains = dominios;
+  return { model: MODELO, max_tokens: 16000, tools: [tool], messages: [{ role: 'user', content: pedido }] };
+}
+const extrairTexto = msg => (msg.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+
+// Chamada direta, usada quando o lote falha ou quando a resposta precisa continuar.
+async function perguntarDireto(params) {
+  const c = await cliente();
   // Fallback automático em caso de recusa só existe para Opus 5 e Fable.
-  const comFallback = /^claude-(opus-5|fable)/.test(MODELO);
+  const comFallback = /^claude-(opus-5|fable)/.test(params.model);
   const uso = { input_tokens: 0, output_tokens: 0 };
-  let resp;
+  let resp, messages = [...params.messages];
   // pause_turn: o laço de busca do servidor atingiu o limite; reenviar para ele continuar.
   for (let i = 0; i < 5; i++) {
-    const params = {
-      model: MODELO,
-      max_tokens: 16000,
-      tools: [{ type: busca, name: 'web_search', max_uses: buscas }],
-      messages,
-    };
+    const p = { ...params, messages };
     resp = comFallback
-      ? await client.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
-      : await client.messages.create(params);
+      ? await c.beta.messages.create({ ...p, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
+      : await c.messages.create(p);
     uso.input_tokens += resp.usage?.input_tokens || 0;
     uso.output_tokens += resp.usage?.output_tokens || 0;
     if (resp.stop_reason !== 'pause_turn') break;
-    messages.splice(1, messages.length - 1, { role: 'assistant', content: resp.content });
+    messages = [params.messages[0], { role: 'assistant', content: resp.content }];
   }
-  const texto = resp.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
-  return { texto, stop: resp.stop_reason, uso };
+  return { texto: extrairTexto(resp), stop: resp.stop_reason, uso };
+}
+
+// Lote: metade do preço, porque a coleta não tem pressa. Se demorar demais, o lote fica
+// pendente em data/lote-pendente.json e a execução seguinte colhe o resultado.
+const ESPERA_LOTE_MS = Number(process.env.PAINEL_LOTE_ESPERA_MIN || 40) * 60000;
+async function perguntarEmLote(pedidos) {
+  const c = await cliente();
+  const lote = await c.messages.batches.create({
+    requests: Object.entries(pedidos).map(([custom_id, params]) => ({ custom_id, params })),
+  });
+  await gravarJson('lote-pendente.json', { id: lote.id, criado_em: new Date().toISOString(), pedidos: Object.keys(pedidos) });
+  const respostas = await colherLote(lote.id, ESPERA_LOTE_MS);
+  if (respostas) await fs.rm(path.join(DADOS, 'lote-pendente.json'), { force: true });
+  return respostas;
+}
+async function colherLote(id, esperaMs) {
+  const c = await cliente();
+  const limite = Date.now() + esperaMs;
+  let estado;
+  do {
+    estado = await c.messages.batches.retrieve(id);
+    if (estado.processing_status === 'ended') break;
+    if (Date.now() >= limite) return null;
+    await espera(30000);
+  } while (true);
+  const out = {};
+  for await (const r of await c.messages.batches.results(id)) {
+    if (r.result.type !== 'succeeded') { out[r.custom_id] = { erro: r.result.type }; continue; }
+    const m = r.result.message;
+    out[r.custom_id] = { texto: extrairTexto(m), stop: m.stop_reason, uso: m.usage, lote: true };
+  }
+  return out;
 }
 
 function montarPedidoCotacoes(ids) {
@@ -236,15 +281,14 @@ function extrairNumeros(texto) {
   return { valores, datas };
 }
 
-async function etapaCotacoes() {
-  const et = { etapa: 'cotacoes', status: 'ok', itens: 0, detalhe: [], modelo: MODELO };
-  // Indicadores mensais ou de divulgação lenta só entram às segundas: cada busca a menos economiza tokens.
-  const segunda = new Date(HOJE + 'T12:00:00Z').getUTCDay() === 1;
-  const ids = INDICADORES.filter(i => i.origem === 'ia' && (segunda || i.cadencia !== 'semanal' || !(leituras.series[i.id] || []).length)).map(i => i.id);
-  et.detalhe.push(`${ids.length} indicadores nesta chamada${segunda ? ', segunda-feira: inclui os semanais' : ', dia comum: só os diários'}`);
+const IDS_BUSCA = () => INDICADORES.filter(i => i.origem === 'ia').map(i => i.id);
+
+function processarCotacoes(resp) {
+  const ids = IDS_BUSCA();
+  const et = { etapa: 'cotacoes', status: 'ok', itens: 0, detalhe: [], modelo: MODELO, lote: !!resp?.lote };
   try {
-    // quase todo o custo vem dos resultados de busca que entram no contexto; um teto por chamada segura a conta
-    const { texto, stop, uso } = await perguntarClaude(montarPedidoCotacoes(ids), Math.min(12, Math.max(5, Math.ceil(ids.length * 0.7))));
+    if (!resp || resp.erro) throw new Error('sem resposta do modelo' + (resp?.erro ? ': ' + resp.erro : ''));
+    const { texto, stop, uso } = resp;
     et.motivo = stop;
     et.bruto = texto.slice(0, 4000);
     et.tokens = uso && { entrada: uso.input_tokens, saida: uso.output_tokens };
@@ -303,11 +347,12 @@ function extrairSinais(texto) {
   return out;
 }
 
-async function etapaBriefing() {
-  const et = { etapa: 'briefing', status: 'ok', itens: 0, detalhe: [], modelo: MODELO };
+async function processarBriefing(resp) {
+  const et = { etapa: 'briefing', status: 'ok', itens: 0, detalhe: [], modelo: MODELO, lote: !!resp?.lote };
   try {
-    const { texto, stop, uso } = await perguntarClaude(PEDIDO_BRIEF(), 8);
-    et.tokens = { entrada: uso.input_tokens, saida: uso.output_tokens };
+    if (!resp || resp.erro) throw new Error('sem resposta do modelo' + (resp?.erro ? ': ' + resp.erro : ''));
+    const { texto, stop, uso } = resp;
+    et.tokens = uso && { entrada: uso.input_tokens, saida: uso.output_tokens };
     et.motivo = stop;
     et.bruto = texto.slice(0, 4000);
     if (stop === 'refusal') throw new Error('modelo recusou o pedido');
@@ -349,13 +394,54 @@ execucao.etapas.push(await etapaBCB());
 const manual = etapaManual();
 if (manual) execucao.etapas.push(manual);
 
-if (ARG.has('--sem-ia')) {
-  execucao.etapas.push({ etapa: 'cotacoes', status: 'pulado', itens: 0, detalhe: ['--sem-ia'] });
-} else if (!process.env.ANTHROPIC_API_KEY) {
-  execucao.etapas.push({ etapa: 'cotacoes', status: 'pulado', itens: 0, detalhe: ['ANTHROPIC_API_KEY não configurada'] });
+// A busca web roda às segundas e quando a atualização é pedida à mão. Nos outros dias
+// só as APIs oficiais rodam, que são gratuitas.
+const SEGUNDA = new Date(HOJE + 'T12:00:00Z').getUTCDay() === 1;
+const FORCAR = ARG.has('--buscar') || process.env.PAINEL_FORCAR_BUSCA === '1';
+const pendente = await lerJson('lote-pendente.json', null);
+
+if (ARG.has('--sem-ia') || !process.env.ANTHROPIC_API_KEY) {
+  const motivo = ARG.has('--sem-ia') ? '--sem-ia' : 'ANTHROPIC_API_KEY não configurada';
+  execucao.etapas.push({ etapa: 'busca', status: 'pulado', itens: 0, detalhe: [motivo] });
+} else if (pendente) {
+  // Lote criado numa execução anterior que não terminou a tempo: colhe agora.
+  const et = { etapa: 'lote', status: 'ok', itens: 0, detalhe: [`lote ${pendente.id}, criado em ${pendente.criado_em}`] };
+  const r = await colherLote(pendente.id, 60000).catch(e => { et.detalhe.push(e.message); return null; });
+  if (!r) { et.status = 'pendente'; et.detalhe.push('ainda processando, será colhido na próxima execução'); execucao.etapas.push(et); }
+  else {
+    await fs.rm(path.join(DADOS, 'lote-pendente.json'), { force: true });
+    execucao.etapas.push(et);
+    execucao.etapas.push(processarCotacoes(r.cotacoes));
+    execucao.etapas.push(await processarBriefing(r.briefing));
+  }
+} else if (!SEGUNDA && !FORCAR) {
+  execucao.etapas.push({ etapa: 'busca', status: 'pulado', itens: 0, detalhe: ['a busca web roda às segundas e nas atualizações pedidas à mão'] });
 } else {
-  execucao.etapas.push(await etapaCotacoes());
-  execucao.etapas.push(await etapaBriefing());
+  const ids = IDS_BUSCA();
+  const pedidos = {
+    // quase todo o custo vem dos resultados de busca que entram no contexto; o teto segura a conta
+    cotacoes: montarParams(montarPedidoCotacoes(ids), Math.min(12, Math.max(5, Math.ceil(ids.length * 0.7))), DOMINIOS_COTACOES),
+    briefing: montarParams(PEDIDO_BRIEF(), 8),   // sem restrição de domínio: notícia precisa de amplitude
+  };
+  let r = null, viaLote = !ARG.has('--sem-lote');
+  if (viaLote) {
+    r = await perguntarEmLote(pedidos).catch(e => {
+      execucao.etapas.push({ etapa: 'lote', status: 'falhou', itens: 0, detalhe: [e.message, 'refazendo em chamada direta'] });
+      viaLote = false;
+      return null;
+    });
+    if (r === null && viaLote) {
+      execucao.etapas.push({ etapa: 'lote', status: 'pendente', itens: 0, detalhe: ['lote ainda processando; o resultado entra na próxima execução'] });
+    }
+  }
+  if (!r && !viaLote) {
+    r = {};
+    for (const [k, p] of Object.entries(pedidos)) r[k] = await perguntarDireto(p).catch(e => ({ erro: e.message }));
+  }
+  if (r) {
+    execucao.etapas.push(processarCotacoes(r.cotacoes));
+    execucao.etapas.push(await processarBriefing(r.briefing));
+  }
 }
 
 for (const s of Object.values(leituras.series)) s.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : a.f < b.f ? -1 : 1);

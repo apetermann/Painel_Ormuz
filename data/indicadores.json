@@ -1,5 +1,5 @@
 {
- "_nota": "Definição dos indicadores. Dado, faixa e texto são coisas separadas: este arquivo guarda faixa e texto; as séries ficam em leituras.json. Ao mudar t1/t2/e1/e2, registre a faixa anterior em faixas-historico.json. origem: eia/bcb = coletado de API oficial; ia = busca web via Claude; dir 'acompanhamento' = sem faixa de alerta. cadencia 'semanal' = indicador mensal ou de divulgação lenta, buscado só às segundas-feiras, para economizar busca.",
+ "_nota": "Definição dos indicadores. Dado, faixa e texto são coisas separadas: este arquivo guarda faixa e texto; as séries ficam em leituras.json. Ao mudar t1/t2/e1/e2, registre a faixa anterior em faixas-historico.json. origem: eia/bcb = coletado de API oficial; ia = busca web via Claude; dir 'acompanhamento' = sem faixa de alerta. cadencia 'semanal' marca os indicadores mensais ou de divulgação lenta; a busca web roda às segundas para todos eles, e em qualquer dia quando a atualização é pedida à mão.",
  "grupos": [
   {
    "grupo": "Preço",

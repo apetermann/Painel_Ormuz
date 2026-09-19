@@ -35,7 +35,7 @@ jobs:
   coletar:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,6 +49,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           PAINEL_MODELO: ${{ (github.event.inputs.modelo != '' && github.event.inputs.modelo != 'padrão') && github.event.inputs.modelo || vars.PAINEL_MODELO }}
           PAINEL_LANCAMENTOS: ${{ github.event.inputs.lancamentos }}
+          # execução pedida à mão busca na web em qualquer dia; a automática só às segundas
+          PAINEL_FORCAR_BUSCA: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: node scripts/atualizar.mjs ${{ github.event.inputs.sem_ia == 'true' && '--sem-ia' || '' }}
       - name: Gravar no repositório
         run: |

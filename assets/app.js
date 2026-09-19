@@ -95,15 +95,19 @@ const pluginEventos = {
     ctx.save();
     ctx.font = '10px "IBM Plex Mono", monospace';
     ctx.textBaseline = 'top';
+    let ultimoPx = -Infinity, degrau = 0;
     for (const ev of op.lista) {
       const px = x.getPixelForValue(ms(ev.d));
       if (px < ca.left || px > ca.right) continue;
+      // eventos próximos ganham degraus para o rótulo não sobrepor o vizinho
+      degrau = px - ultimoPx < 70 ? degrau + 1 : 0;
+      ultimoPx = px;
       ctx.strokeStyle = 'rgba(18,48,59,.35)';
       ctx.setLineDash([2, 3]);
       ctx.beginPath(); ctx.moveTo(px, ca.top); ctx.lineTo(px, ca.bottom); ctx.stroke();
       if (op.rotulos) {
         ctx.fillStyle = 'rgba(18,48,59,.7)';
-        ctx.save(); ctx.translate(px + 3, ca.top + 2); ctx.fillText(ev.curto, 0, 0); ctx.restore();
+        ctx.save(); ctx.translate(px + 3, ca.top + 2 + degrau * 12); ctx.fillText(ev.curto, 0, 0); ctx.restore();
       }
     }
     ctx.restore();
