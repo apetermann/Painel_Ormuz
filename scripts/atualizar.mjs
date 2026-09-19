@@ -6,7 +6,7 @@
 // Variáveis de ambiente:
 //   EIA_API_KEY          chave gratuita da EIA (https://www.eia.gov/opendata/register.php); sem ela usa DEMO_KEY
 //   ANTHROPIC_API_KEY    habilita a busca web das cotações sem API e a varredura de notícias
-//   PAINEL_MODELO        modelo Claude (padrão claude-opus-5)
+//   PAINEL_MODELO        modelo Claude (padrão claude-sonnet-5)
 //   PAINEL_LANCAMENTOS   lançamentos manuais: "diesel=6.52@2026-09-15; ureia=610"
 
 import fs from 'node:fs/promises';
@@ -20,7 +20,7 @@ const ARG = new Set(process.argv.slice(2));
 const INICIO_HIST = '2025-01-01';   // início das séries exibidas
 const INICIO_BASE = '2019-06-01';   // histórico extra para a média de 5 anos
 const EIA_KEY = (process.env.EIA_API_KEY || '').trim() || 'DEMO_KEY';
-const MODELO = process.env.PAINEL_MODELO || 'claude-opus-5';
+const MODELO = (process.env.PAINEL_MODELO || '').trim() || 'claude-sonnet-5';
 
 // Valores registrados no documento de análise, usados como ponto de partida das séries sem API.
 const SEMENTES = [
@@ -183,22 +183,30 @@ async function perguntarClaude(pedido) {
   const { default: Anthropic } = await import('@anthropic-ai/sdk');
   const client = new Anthropic();
   const messages = [{ role: 'user', content: pedido }];
+  // Haiku só aceita a busca básica; os demais usam a versão com filtragem dinâmica, que corta tokens de entrada.
+  const busca = MODELO.startsWith('claude-haiku') ? 'web_search_20250305' : 'web_search_20260209';
+  // Fallback automático em caso de recusa só existe para Opus 5 e Fable.
+  const comFallback = /^claude-(opus-5|fable)/.test(MODELO);
+  const uso = { input_tokens: 0, output_tokens: 0 };
   let resp;
   // pause_turn: o laço de busca do servidor atingiu o limite; reenviar para ele continuar.
   for (let i = 0; i < 5; i++) {
-    resp = await client.beta.messages.create({
+    const params = {
       model: MODELO,
       max_tokens: 16000,
-      betas: ['server-side-fallback-2026-07-01'],
-      fallbacks: 'default',
-      tools: [{ type: 'web_search_20260209', name: 'web_search', max_uses: 25 }],
+      tools: [{ type: busca, name: 'web_search', max_uses: 15 }],
       messages,
-    });
+    };
+    resp = comFallback
+      ? await client.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
+      : await client.messages.create(params);
+    uso.input_tokens += resp.usage?.input_tokens || 0;
+    uso.output_tokens += resp.usage?.output_tokens || 0;
     if (resp.stop_reason !== 'pause_turn') break;
     messages.splice(1, messages.length - 1, { role: 'assistant', content: resp.content });
   }
   const texto = resp.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
-  return { texto, stop: resp.stop_reason, uso: resp.usage };
+  return { texto, stop: resp.stop_reason, uso };
 }
 
 function montarPedidoCotacoes(ids) {

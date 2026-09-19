@@ -22,7 +22,7 @@ GitHub Actions (19h)  ──►  scripts/atualizar.mjs  ──►  data/leituras
 2. **Chaves** em *Settings → Secrets and variables → Actions → New repository secret*:
    - `EIA_API_KEY`: gratuita, em <https://www.eia.gov/opendata/register.php>. Sem ela o script usa a chave de demonstração, que é limitada e costuma falhar.
    - `ANTHROPIC_API_KEY`: habilita a busca web e o briefing. Sem ela só os indicadores de API oficial são atualizados.
-3. Opcional, em *Variables*: `PAINEL_MODELO` para trocar o modelo (padrão `claude-opus-5`; `claude-sonnet-5` custa menos).
+3. Opcional, em *Variables*: `PAINEL_MODELO` para trocar o modelo (padrão `claude-sonnet-5`; `claude-haiku-4-5` custa metade, com busca menos precisa; `claude-opus-5` é o mais preciso e o mais caro).
 4. Rode a primeira coleta em *Actions → Atualizar painel → Run workflow*.
 
 ## Uso no dia a dia
