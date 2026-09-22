@@ -1,6 +1,61 @@
 {
  "execucoes": [
   {
+   "em": "2026-09-22T00:29:59.252Z",
+   "data": "2026-09-21",
+   "etapas": [
+    {
+     "etapa": "eia",
+     "status": "ok",
+     "itens": 8,
+     "detalhe": [
+      "brent: 431 pontos, 0 novos ou revisados, último 2026-09-15 = 130.8",
+      "crackny: 417 pontos, 0 novos ou revisados, último 2026-09-15 = 93.4",
+      "distdesvio: 89 pontos, 0 novos ou revisados, último 2026-09-11 = -12.5",
+      "crudesvio: 89 pontos, 0 novos ou revisados, último 2026-09-11 = 1",
+      "spr: 89 pontos, 0 novos ou revisados, último 2026-09-11 = 285",
+      "refinoeua: 89 pontos, 0 novos ou revisados, último 2026-09-11 = 96.8",
+      "demdistdesvio: 89 pontos, 0 novos ou revisados, último 2026-09-11 = -4.5",
+      "henryhub: 422 pontos, 0 novos ou revisados, último 2026-09-15 = 2.97"
+     ]
+    },
+    {
+     "etapa": "bcb",
+     "status": "ok",
+     "itens": 1,
+     "detalhe": [
+      "cambio: 432 pontos, 1 novos, último 2026-09-21 = 5.1117"
+     ]
+    },
+    {
+     "etapa": "cotacoes",
+     "status": "falhou",
+     "itens": 0,
+     "detalhe": [
+      "sem resposta do modelo: errored"
+     ],
+     "modelo": "claude-sonnet-5",
+     "lote": false
+    },
+    {
+     "etapa": "briefing",
+     "status": "ok",
+     "itens": 0,
+     "detalhe": [
+      "dia sem sinal"
+     ],
+     "modelo": "claude-sonnet-5",
+     "lote": true,
+     "tokens": {
+      "entrada": 109856,
+      "saida": 3884
+     },
+     "motivo": "end_turn",
+     "bruto": "{\"sinais\":[]}"
+    }
+   ]
+  },
+  {
    "em": "2026-09-20T23:46:59.810Z",
    "data": "2026-09-20",
    "etapas": [
