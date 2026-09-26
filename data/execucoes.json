@@ -1,6 +1,43 @@
 {
  "execucoes": [
   {
+   "em": "2026-09-26T00:19:06.045Z",
+   "data": "2026-09-25",
+   "etapas": [
+    {
+     "etapa": "eia",
+     "status": "ok",
+     "itens": 8,
+     "detalhe": [
+      "brent: 436 pontos, 0 novos ou revisados, último 2026-09-22 = 114.89",
+      "crackny: 422 pontos, 0 novos ou revisados, último 2026-09-22 = 95.4",
+      "distdesvio: 90 pontos, 0 novos ou revisados, último 2026-09-18 = -12",
+      "crudesvio: 90 pontos, 0 novos ou revisados, último 2026-09-18 = 1.9",
+      "spr: 90 pontos, 0 novos ou revisados, último 2026-09-18 = 284.6",
+      "refinoeua: 90 pontos, 0 novos ou revisados, último 2026-09-18 = 94",
+      "demdistdesvio: 90 pontos, 0 novos ou revisados, último 2026-09-18 = -3.9",
+      "henryhub: 427 pontos, 0 novos ou revisados, último 2026-09-22 = 2.9"
+     ]
+    },
+    {
+     "etapa": "bcb",
+     "status": "ok",
+     "itens": 1,
+     "detalhe": [
+      "cambio: 436 pontos, 1 novos, último 2026-09-25 = 5.1991"
+     ]
+    },
+    {
+     "etapa": "busca",
+     "status": "pulado",
+     "itens": 0,
+     "detalhe": [
+      "a busca web roda às segundas e nas atualizações pedidas à mão"
+     ]
+    }
+   ]
+  },
+  {
    "em": "2026-09-25T00:12:42.118Z",
    "data": "2026-09-24",
    "etapas": [
