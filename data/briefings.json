@@ -32,6 +32,35 @@
   "2026-09-21": {
    "sinais": [],
    "em": "2026-09-22T00:33:09.113Z"
+  },
+  "2026-09-28": {
+   "sinais": [
+    {
+     "titulo": "Ormuz sob ataques contínuos e frota 'dark' em expansão",
+     "fonte": "Windward AI (rastreamento AIS), 27/09/2026",
+     "dado": "Apenas 24 navios cruzaram Ormuz em 27/09 (9 entrada, 15 saída), 14 'dark'; ataques a navios em 20, 21 e 23/09",
+     "implicacao": "Fluxo físico permanece reprimido e mascarado por AIS desligado; risco geopolítico sustenta prêmio de frete e seguro de guerra",
+     "frente": "Fluxo físico e segurança marítima",
+     "relevancia": "alto"
+    },
+    {
+     "titulo": "Preço do EU ETS sobe perto de máxima de seis semanas",
+     "fonte": "ICE/EU ETS, dados de leilão via Trading Economics, 28/09/2026",
+     "dado": "Permit EUA cotado a €86,45/tCO2 em 28/09, alta de 12,6% em 12 meses, próximo da máxima de seis semanas",
+     "implicacao": "Média do 3º trimestre (base do próximo preço CBAM) tende a superar os €75,28 do 2º trimestre, elevando custo de importação",
+     "frente": "Carbono e regulação",
+     "relevancia": "medio"
+    },
+    {
+     "titulo": "MME enquadra usina de biometano no Paraná em regime de infraestrutura",
+     "fonte": "Ministério de Minas e Energia, via Diário do Transporte, 28/09/2026",
+     "dado": "Projeto Tulipa: R$116 milhões, até 400 t/dia de resíduos agroindustriais, capacidade de 31.440 m³/dia de biometano, operação até jan/2028",
+     "implicacao": "Amplia oferta local de substituto de diesel/GLP no interior, mas escala ainda marginal frente ao mandato de 1% em 2026",
+     "frente": "Bioinsumos",
+     "relevancia": "baixo"
+    }
+   ],
+   "em": "2026-09-29T01:29:51.472Z"
   }
  }
 }
