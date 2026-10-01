@@ -184,9 +184,11 @@ async function etapaBCB() {
 // contexto (que é de onde vem quase todo o custo) e atende a regra de citar a fonte primária.
 const DOMINIOS_COTACOES = [
   'eia.gov', 'iea.org', 'reuters.com', 'bloomberg.com', 'argusmedia.com', 'spglobal.com',
-  'balticexchange.com', 'opec.org', 'portwatch.imf.org', 'gov.br', 'abicom.com.br',
-  'farmnews.com.br', 'petrobras.com.br', 'comexstat.mdic.gov.br',
+  'balticexchange.com', 'opec.org', 'portwatch.imf.org', 'www.gov.br', 'abicom.com.br',
+  'farmnews.com.br', 'petrobras.com.br', 'comexstat.mdic.gov.br', 'anp.gov.br', 'ibge.gov.br',
 ];
+// Só hostnames: sufixo público como 'gov.br' faz a API recusar o pedido inteiro, e em lote
+// a recusa chega como resultado 'errored', sem mensagem, o que custou duas segundas-feiras.
 
 let clienteCache;
 async function cliente() {
@@ -248,7 +250,10 @@ async function colherLote(id, esperaMs) {
   } while (true);
   const out = {};
   for await (const r of await c.messages.batches.results(id)) {
-    if (r.result.type !== 'succeeded') { out[r.custom_id] = { erro: r.result.type }; continue; }
+    if (r.result.type !== 'succeeded') {
+      out[r.custom_id] = { erro: r.result.type, detalhe: JSON.stringify(r.result.error || r.result).slice(0, 400) };
+      continue;
+    }
     const m = r.result.message;
     out[r.custom_id] = { texto: extrairTexto(m), stop: m.stop_reason, uso: m.usage, lote: true };
   }
@@ -438,6 +443,16 @@ if (ARG.has('--sem-ia') || !process.env.ANTHROPIC_API_KEY) {
   if (!r && !viaLote) {
     r = {};
     for (const [k, p] of Object.entries(pedidos)) r[k] = await perguntarDireto(p).catch(e => ({ erro: e.message }));
+  }
+  // Pedido que volta do lote com erro é refeito na hora: perder a coleta da semana custa mais
+  // que a diferença de preço entre lote e chamada direta.
+  if (r) {
+    for (const [k, v] of Object.entries(r)) {
+      if (!v?.erro) continue;
+      const et = { etapa: 'repescagem', status: 'ok', itens: 0, detalhe: [`${k} falhou no lote (${v.erro}: ${v.detalhe || 'sem detalhe'}); refazendo em chamada direta`] };
+      r[k] = await perguntarDireto(pedidos[k]).catch(e => { et.status = 'falhou'; et.detalhe.push(e.message); return { erro: e.message }; });
+      execucao.etapas.push(et);
+    }
   }
   if (r) {
     execucao.etapas.push(processarCotacoes(r.cotacoes));
