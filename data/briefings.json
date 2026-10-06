@@ -61,6 +61,35 @@
     }
    ],
    "em": "2026-09-29T01:29:51.472Z"
+  },
+  "2026-10-05": {
+   "sinais": [
+    {
+     "titulo": "Iraque reabre rota de petróleo além de Ormuz",
+     "fonte": "Bloomberg",
+     "dado": "Iraqi Oil Tankers Co. carregou VLCC com 2 milhões de barris para navegar além de Ormuz, primeira vez em décadas",
+     "implicacao": "Produtores do Golfo buscam rotas alternativas, reduzindo exposição ao estreito e ao risco de ataques a petroleiros",
+     "frente": "Fluxo físico e segurança marítima",
+     "relevancia": "alto"
+    },
+    {
+     "titulo": "Petroleiro sofre quarto ataque do mês em Ormuz",
+     "fonte": "UKMTO",
+     "dado": "Petroleiro atingido por projétil desconhecido em 4 de outubro, com dano à sala de máquinas; quarto ataque reportado no mês",
+     "implicacao": "Risco de seguro de guerra e tempo de trânsito seguem elevados apesar da retomada de exportações no Golfo",
+     "frente": "Fluxo físico e segurança marítima",
+     "relevancia": "alto"
+    },
+    {
+     "titulo": "Carregamentos de petróleo do Irã zeram em setembro",
+     "fonte": "Vortexa",
+     "dado": "Carregamentos de cru iraniano caíram a zero em setembro, primeiro mês sem embarques desde o início da guerra, de ~250 mil bpd em agosto",
+     "implicacao": "Irã perde capacidade de monetizar petróleo mesmo com guerra em curso, reforçando dependência de oferta saudita/emirati",
+     "frente": "Governança da oferta",
+     "relevancia": "alto"
+    }
+   ],
+   "em": "2026-10-06T02:08:23.708Z"
   }
  }
 }
