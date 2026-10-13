@@ -90,6 +90,35 @@
     }
    ],
    "em": "2026-10-06T02:08:23.708Z"
+  },
+  "2026-10-12": {
+   "sinais": [
+    {
+     "titulo": "Diesel crack spread atinge novo recorde sobre o Brent",
+     "fonte": "EIA/NYMEX (dados de 12/10/2026)",
+     "dado": "Crack de diesel sobre Brent em US$91,16/bbl, estoques de destilados 12% abaixo da média de 5 anos, refino a 92,7% de utilização",
+     "implicacao": "Confirma descolamento: petróleo abundante, mas capacidade de conversão em diesel segue escassa e cara",
+     "frente": "Refino e destilados",
+     "relevancia": "alto"
+    },
+    {
+     "titulo": "OPEP corta previsão de crescimento da demanda 2026 em 70%",
+     "fonte": "OPEP, Secretário-Geral Haitham Al Ghais, WPC Energy Congress, Riade, 12/10/2026",
+     "dado": "Previsão de crescimento da demanda global 2026 caiu de 1,4 milhão para 400 mil bpd",
+     "implicacao": "Sinaliza fraqueza na demanda por cru mesmo com preços altos, reforçando que o gargalo é no refino, não na molécula",
+     "frente": "Governança da oferta",
+     "relevancia": "alto"
+    },
+    {
+     "titulo": "Prêmio de risco de tripulação dispara em travessias de Ormuz",
+     "fonte": "Fortune, 10/10/2026",
+     "dado": "Comandantes ganham US$100 mil por mês mais bônus de US$50 mil por viagem para cruzar o Estreito de Ormuz",
+     "implicacao": "Fluxo físico de petróleo persiste, mas frete e seguro continuam embutindo prêmio de guerra elevado nos custos",
+     "frente": "Fluxo físico e segurança marítima",
+     "relevancia": "medio"
+    }
+   ],
+   "em": "2026-10-13T02:55:10.086Z"
   }
  }
 }

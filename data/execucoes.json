@@ -1,6 +1,70 @@
 {
  "execucoes": [
   {
+   "em": "2026-10-13T02:47:58.255Z",
+   "data": "2026-10-12",
+   "etapas": [
+    {
+     "etapa": "eia",
+     "status": "ok",
+     "itens": 8,
+     "detalhe": [
+      "brent: 446 pontos, 0 novos ou revisados, último 2026-10-06 = 125.44",
+      "crackny: 432 pontos, 0 novos ou revisados, último 2026-10-06 = 72.51",
+      "distdesvio: 92 pontos, 0 novos ou revisados, último 2026-10-02 = -11.3",
+      "crudesvio: 92 pontos, 0 novos ou revisados, último 2026-10-02 = -0.6",
+      "spr: 92 pontos, 0 novos ou revisados, último 2026-10-02 = 283",
+      "refinoeua: 92 pontos, 0 novos ou revisados, último 2026-10-02 = 92.7",
+      "demdistdesvio: 92 pontos, 0 novos ou revisados, último 2026-10-02 = -4.8",
+      "henryhub: 437 pontos, 0 novos ou revisados, último 2026-10-06 = 3.03"
+     ]
+    },
+    {
+     "etapa": "bcb",
+     "status": "ok",
+     "itens": 1,
+     "detalhe": [
+      "cambio: 446 pontos, 0 novos, último 2026-10-09 = 4.9892"
+     ]
+    },
+    {
+     "etapa": "repescagem",
+     "status": "falhou",
+     "itens": 0,
+     "detalhe": [
+      "cotacoes falhou no lote (errored: {\"type\":\"error\",\"error\":{\"details\":null,\"type\":\"invalid_request_error\",\"message\":\"The following domains are not accessible to our user agent: ['reuters.com']. Read more: https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler\"},\"request_id\":null}); refazendo em chamada direta",
+      "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"The following domains are not accessible to our user agent: ['reuters.com']. Read more: https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler\"},\"request_id\":\"req_011CfyUwqeCj3VQJ7eqf2yLR\"}"
+     ]
+    },
+    {
+     "etapa": "cotacoes",
+     "status": "falhou",
+     "itens": 0,
+     "detalhe": [
+      "sem resposta do modelo: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"The following domains are not accessible to our user agent: ['reuters.com']. Read more: https://support.anthropic.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler\"},\"request_id\":\"req_011CfyUwqeCj3VQJ7eqf2yLR\"}"
+     ],
+     "modelo": "claude-sonnet-5",
+     "lote": false
+    },
+    {
+     "etapa": "briefing",
+     "status": "ok",
+     "itens": 3,
+     "detalhe": [
+      "3 sinais"
+     ],
+     "modelo": "claude-sonnet-5",
+     "lote": true,
+     "tokens": {
+      "entrada": 463108,
+      "saida": 10931
+     },
+     "motivo": "end_turn",
+     "bruto": "{\"sinais\":[{\"titulo\":\"Diesel crack spread atinge novo recorde sobre o Brent\",\"fonte\":\"EIA/NYMEX (dados de 12/10/2026)\",\"dado\":\"Crack de diesel sobre Brent em US$91,16/bbl, estoques de destilados 12% abaixo da média de 5 anos, refino a 92,7% de utilização\",\"implicacao\":\"Confirma descolamento: petróleo abundante, mas capacidade de conversão em diesel segue escassa e cara\",\"frente\":\"Refino e destilados\",\"relevancia\":\"alto\"},{\"titulo\":\"OPEP corta previsão de crescimento da demanda 2026 em 70%\",\"fonte\":\"OPEP, Secretário-Geral Haitham Al Ghais, WPC Energy Congress, Riade, 12/10/2026\",\"dado\":\"Previsão de crescimento da demanda global 2026 caiu de 1,4 milhão para 400 mil bpd\",\"implicacao\":\"Sinaliza fraqueza na demanda por cru mesmo com preços altos, reforçando que o gargalo é no refino, não na molécula\",\"frente\":\"Governança da oferta\",\"relevancia\":\"alto\"},{\"titulo\":\"Prêmio de risco de tripulação dispara em travessias de Ormuz\",\"fonte\":\"Fortune, 10/10/2026\",\"dado\":\"Comandantes ganham US$100 mil por mês mais bônus de US$50 mil por viagem para cruzar o Estreito de Ormuz\",\"implicacao\":\"Fluxo físico de petróleo persiste, mas frete e seguro continuam embutindo prêmio de guerra elevado nos custos\",\"frente\":\"Fluxo físico e segurança marítima\",\"relevancia\":\"medio\"}]}"
+    }
+   ]
+  },
+  {
    "em": "2026-10-12T00:54:19.373Z",
    "data": "2026-10-11",
    "etapas": [
