@@ -183,12 +183,16 @@ async function etapaBCB() {
 // Fontes primárias para as cotações. Restringir o domínio corta o texto que entra no
 // contexto (que é de onde vem quase todo o custo) e atende a regra de citar a fonte primária.
 const DOMINIOS_COTACOES = [
-  'eia.gov', 'iea.org', 'reuters.com', 'bloomberg.com', 'argusmedia.com', 'spglobal.com',
-  'balticexchange.com', 'opec.org', 'portwatch.imf.org', 'www.gov.br', 'abicom.com.br',
-  'farmnews.com.br', 'petrobras.com.br', 'comexstat.mdic.gov.br', 'anp.gov.br', 'ibge.gov.br',
+  'eia.gov', 'iea.org', 'argusmedia.com', 'spglobal.com', 'balticexchange.com', 'opec.org',
+  'portwatch.imf.org', 'www.gov.br', 'abicom.com.br', 'farmnews.com.br', 'petrobras.com.br',
+  'comexstat.mdic.gov.br', 'anp.gov.br', 'ibge.gov.br',
 ];
-// Só hostnames: sufixo público como 'gov.br' faz a API recusar o pedido inteiro, e em lote
-// a recusa chega como resultado 'errored', sem mensagem, o que custou duas segundas-feiras.
+// Duas armadilhas desta lista, ambas já custaram coleta:
+// 1. só hostname; sufixo público como 'gov.br' invalida o pedido inteiro;
+// 2. site que bloqueia o rastreador da Anthropic (Reuters, Bloomberg) também invalida.
+// Por isso, quando a API recusa a lista, o pedido é refeito sem restrição de domínio.
+const SEM_ACESSO = /domains are not accessible/i;
+const AVISOS = [];
 
 let clienteCache;
 async function cliente() {
@@ -214,9 +218,15 @@ async function perguntarDireto(params) {
   // pause_turn: o laço de busca do servidor atingiu o limite; reenviar para ele continuar.
   for (let i = 0; i < 5; i++) {
     const p = { ...params, messages };
-    resp = comFallback
-      ? await c.beta.messages.create({ ...p, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
-      : await c.messages.create(p);
+    const enviar = q => comFallback
+      ? c.beta.messages.create({ ...q, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
+      : c.messages.create(q);
+    resp = await enviar(p).catch(e => {
+      if (!SEM_ACESSO.test(e.message || '')) throw e;
+      const livre = { ...p, tools: p.tools.map(({ allowed_domains, ...t }) => t) };
+      AVISOS.push('a lista de domínios foi recusada (' + (e.message.match(/\['[^\]]*'\]/)?.[0] || 'domínio bloqueado') + '); refeito sem restrição');
+      return enviar(livre);
+    });
     uso.input_tokens += resp.usage?.input_tokens || 0;
     uso.output_tokens += resp.usage?.output_tokens || 0;
     if (resp.stop_reason !== 'pause_turn') break;
@@ -459,6 +469,8 @@ if (ARG.has('--sem-ia') || !process.env.ANTHROPIC_API_KEY) {
     execucao.etapas.push(await processarBriefing(r.briefing));
   }
 }
+
+if (AVISOS.length) execucao.etapas.push({ etapa: 'avisos', status: 'parcial', itens: AVISOS.length, detalhe: AVISOS });
 
 for (const s of Object.values(leituras.series)) s.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : a.f < b.f ? -1 : 1);
 leituras.correcoes = leituras.correcoes.slice(-500);
