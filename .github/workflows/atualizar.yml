@@ -2,7 +2,7 @@ name: Atualizar painel
 
 on:
   schedule:
-    - cron: '0 22 * * *'   # 19h em Brasília (UTC-3)
+    - cron: '0 22 * * 1'   # segundas, 19h em Brasília (UTC-3)
   workflow_dispatch:
     inputs:
       lancamentos:

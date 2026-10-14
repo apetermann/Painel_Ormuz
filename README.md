@@ -5,14 +5,15 @@ Acompanhamento diário do choque energético de 2026 e do repasse para custo no 
 ## Como funciona
 
 ```
-GitHub Actions (19h)  ──►  scripts/atualizar.mjs  ──►  data/leituras.json  ──►  index.html (gráficos)
+GitHub Actions (seg 19h) ─►  scripts/atualizar.mjs  ──►  data/leituras.json  ──►  index.html (gráficos)
                               │ EIA API        Brent, crack NY, estoques, SPR, refino e consumo EUA
                               │ Banco Central  câmbio PTAX
                               │ Claude + busca web   demais indicadores e varredura de notícias
 ```
 
+- A coleta roda **uma vez por semana, nas segundas às 19h**. Como cada execução baixa o histórico inteiro da EIA e do Banco Central, as séries diárias chegam completas: cadência semanal não cria buraco no gráfico.
 - **Fontes oficiais** (EIA e Banco Central) trazem o histórico desde janeiro de 2025 já na primeira coleta, então esses gráficos têm tendência desde o primeiro dia.
-- **Indicadores sem API** (crack europeu, seguro, travessias, ureia, diesel na bomba, refino e vendas no Brasil etc.) são buscados na web pelo Claude, com a data de referência do número. Os mensais, marcados com `"cadencia": "semanal"` em `indicadores.json`, só são buscados às segundas-feiras, porque quase todo o custo vem dos resultados de busca que entram no contexto do modelo.
+- **Indicadores sem API** (crack europeu, seguro, travessias, ureia, diesel na bomba, refino e vendas no Brasil etc.) são buscados na web pelo Claude, com a data de referência do número. É a única etapa que consome tokens, e por isso roda uma vez por semana; se uma execução escorregar de dia, a seguinte repõe, porque o critério é ter passado seis dias da última busca, não ser segunda.
 - Cada ponto guarda a **fonte** (`eia`, `bcb`, `ia`, `manual`, `doc`). Valor revisado não é sobrescrito em silêncio: a mudança fica em `correcoes` dentro de `leituras.json`.
 - A aba **Coleta** mostra o diagnóstico de cada execução, incluindo a resposta bruta da busca.
 

@@ -415,7 +415,12 @@ if (manual) execucao.etapas.push(manual);
 
 // A busca web roda às segundas e quando a atualização é pedida à mão. Nos outros dias
 // só as APIs oficiais rodam, que são gratuitas.
-const SEGUNDA = new Date(HOJE + 'T12:00:00Z').getUTCDay() === 1;
+// A cadência é semanal, mas não presa ao dia da semana: o GitHub atrasa o agendamento,
+// e uma execução que escorrega para domingo ou terça não pode pular a busca da semana.
+const historico = await lerJson('execucoes.json', { execucoes: [] });
+const ultimaBusca = historico.execucoes.find(e => e.etapas?.some(t => ['cotacoes', 'briefing'].includes(t.etapa)));
+const DIAS_SEM_BUSCA = ultimaBusca ? Math.round((Date.parse(HOJE) - Date.parse(ultimaBusca.data)) / 864e5) : 999;
+const TOCA_BUSCAR = DIAS_SEM_BUSCA >= 6;
 const FORCAR = ARG.has('--buscar') || process.env.PAINEL_FORCAR_BUSCA === '1';
 const pendente = await lerJson('lote-pendente.json', null);
 
@@ -433,8 +438,8 @@ if (ARG.has('--sem-ia') || !process.env.ANTHROPIC_API_KEY) {
     execucao.etapas.push(processarCotacoes(r.cotacoes));
     execucao.etapas.push(await processarBriefing(r.briefing));
   }
-} else if (!SEGUNDA && !FORCAR) {
-  execucao.etapas.push({ etapa: 'busca', status: 'pulado', itens: 0, detalhe: ['a busca web roda às segundas e nas atualizações pedidas à mão'] });
+} else if (!TOCA_BUSCAR && !FORCAR) {
+  execucao.etapas.push({ etapa: 'busca', status: 'pulado', itens: 0, detalhe: [`busca feita há ${DIAS_SEM_BUSCA} dias; a cadência é semanal, use o botão Atualizar agora para antecipar`] });
 } else {
   const ids = IDS_BUSCA();
   const pedidos = {
