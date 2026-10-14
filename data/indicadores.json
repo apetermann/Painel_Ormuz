@@ -1,5 +1,5 @@
 {
- "_nota": "Definição dos indicadores. Dado, faixa e texto são coisas separadas: este arquivo guarda faixa e texto; as séries ficam em leituras.json. Ao mudar t1/t2/e1/e2, registre a faixa anterior em faixas-historico.json. origem: eia/bcb = coletado de API oficial; ia = busca web via Claude; dir 'acompanhamento' = sem faixa de alerta; contexto = true fica fora do índice de tensão, que é um índice de diesel. cadencia 'semanal' marca os indicadores mensais ou de divulgação lenta; a busca web roda às segundas para todos eles, e em qualquer dia quando a atualização é pedida à mão.",
+ "_nota": "Definição dos indicadores. Dado, faixa e texto são coisas separadas: este arquivo guarda faixa e texto; as séries ficam em leituras.json. Ao mudar t1/t2/e1/e2, registre a faixa anterior em faixas-historico.json. origem: eia/bcb = coletado de API oficial; ia = busca web via Claude; dir 'acompanhamento' = sem faixa de alerta; contexto = true fica fora do índice de tensão, que é um índice de diesel. cadencia 'mensal' = publicado uma vez por mês (Oil Market Report da IEA), só entra na busca se o último valor tiver mais de 25 dias; 'semanal' = tudo o mais que depende de busca.",
  "grupos": [
   {
    "grupo": "Produção mundial de diesel",
@@ -20,7 +20,7 @@
      "leitura": "Ganhou faixa, calibrada contra a trajetória da IEA: abaixo de 81 é pior que a mínima sazonal projetada. A recuperação de fim de ano não fecha o rombo de destilado acumulado em 2026.",
      "fonte": "IEA Oil Market Report, via busca web",
      "url": "https://www.iea.org/topics/oil-market-report",
-     "cadencia": "semanal",
+     "cadencia": "mensal",
      "t1": 83,
      "t2": 81,
      "provisoria": true
@@ -38,7 +38,7 @@
      "confianca": "media",
      "peso": 1.8,
      "origem": "ia",
-     "cadencia": "semanal",
+     "cadencia": "mensal",
      "provisoria": true,
      "ref": "IEA, outubro de 2026: disponibilidade 1,5 mi b/d menor no segundo trimestre e 1,7 mi b/d menor no terceiro, contra o ano anterior.",
      "leitura": "O indicador mais direto da tese: mede o diesel que efetivamente chega ao mercado, somando produção e exportação perdidas. Enquanto estiver fortemente negativo, preço alto é escassez de oferta, não demanda aquecida.",
@@ -141,7 +141,7 @@
      "confianca": "media",
      "peso": 1.5,
      "origem": "ia",
-     "cadencia": "semanal",
+     "cadencia": "mensal",
      "provisoria": true,
      "ref": "IEA, outubro de 2026: média de 4,7 mi b/d nos primeiros nove meses de 2026, 10% abaixo do ano anterior, e 4,7 mi b/d em setembro, quase 700 mil b/d abaixo de um ano antes.",
      "leitura": "Nível é melhor que variação: compara com qualquer mês, não só com o ano anterior. Refino alto com exportação baixa significa produto retido na origem, por cota, consumo interno ou falta de navio.",
@@ -161,7 +161,7 @@
      "confianca": "media",
      "peso": 1.5,
      "origem": "ia",
-     "cadencia": "semanal",
+     "cadencia": "mensal",
      "provisoria": true,
      "ref": "IEA, outubro de 2026: exportação líquida conjunta caiu 1,3 mi b/d, para 820 mil b/d em setembro, mais de 60% abaixo do ano anterior. Estados Unidos e China subiram 610 mil b/d contra o ano anterior, sem compensar a perda.",
      "leitura": "É o epicentro do buraco de oferta. Enquanto esta série não se recuperar, o alívio de preço depende de quem não tem capacidade de substituir o volume perdido.",
@@ -181,7 +181,7 @@
      "confianca": "media",
      "peso": 1.5,
      "origem": "ia",
-     "cadencia": "semanal",
+     "cadencia": "mensal",
      "provisoria": true,
      "ref": "IEA, outubro de 2026: fluxo total subiu 3,7 para 10,9 mi b/d em setembro, com transferências navio a navio no Golfo de Omã. As exportações por rota alternativa subiram 970 mil b/d, para 5,6 mi b/d, com a volta do oleoduto Leste-Oeste.",
      "leitura": "Substitui a contagem de navios como medida principal do estreito. Volume é comparável mês a mês e não depende de transponder ligado. A contagem do PortWatch continua no painel como contexto, para detectar divergência entre as duas medidas.",
@@ -404,7 +404,7 @@
      "leitura": "Sem faixa de alerta, porque aqui queda não é risco por si. A IEA atribui a retração a preço recorde e a economia em piora, com o consumidor adiando compra de óleo de aquecimento, enquanto o diesel de transporte segue inelástico. Queda com crack alto é racionamento, não destruição de demanda.",
      "fonte": "IEA Oil Market Report, via busca web",
      "url": "https://www.iea.org/topics/oil-market-report",
-     "cadencia": "semanal"
+     "cadencia": "mensal"
     },
     {
      "id": "vendasdiesel",

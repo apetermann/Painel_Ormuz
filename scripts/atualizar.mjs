@@ -6,7 +6,8 @@
 // Variáveis de ambiente:
 //   EIA_API_KEY          chave gratuita da EIA (https://www.eia.gov/opendata/register.php); sem ela usa DEMO_KEY
 //   ANTHROPIC_API_KEY    habilita a busca web das cotações sem API e a varredura de notícias
-//   PAINEL_MODELO        modelo Claude (padrão claude-sonnet-5)
+//   PAINEL_MODELO        modelo Claude (padrão claude-haiku-4-5; sonnet-5 acerta mais, custa o dobro)
+//   PAINEL_BUSCA         'auto' devolve a busca semanal automática; o padrão 'off' só busca sob demanda
 //   PAINEL_LANCAMENTOS   lançamentos manuais: "diesel=6.52@2026-09-15; ureia=610"
 
 import fs from 'node:fs/promises';
@@ -20,7 +21,7 @@ const ARG = new Set(process.argv.slice(2));
 const INICIO_HIST = '2025-01-01';   // início das séries exibidas
 const INICIO_BASE = '2019-06-01';   // histórico extra para a média de 5 anos
 const EIA_KEY = (process.env.EIA_API_KEY || '').trim() || 'DEMO_KEY';
-const MODELO = (process.env.PAINEL_MODELO || '').trim() || 'claude-sonnet-5';
+const MODELO = (process.env.PAINEL_MODELO || '').trim() || 'claude-haiku-4-5';
 
 // Valores registrados no documento de análise, usados como ponto de partida das séries sem API.
 const SEMENTES = [
@@ -300,7 +301,16 @@ function extrairNumeros(texto) {
   return { valores, datas };
 }
 
-const IDS_BUSCA = () => INDICADORES.filter(i => i.origem === 'ia').map(i => i.id);
+// Indicador mensal (Oil Market Report da IEA) só entra na busca se o último valor
+// tiver mais de 45 dias. O relatório sai no meio do mês com dados do mês anterior, então
+// um valor de 43 dias atrás costuma ser o mais recente que existe: pedir de novo gasta
+// token e devolve o mesmo número.
+const IDS_BUSCA = () => INDICADORES.filter(i => {
+  if (i.origem !== 'ia') return false;
+  if (i.cadencia !== 'mensal') return true;
+  const u = (leituras.series[i.id] || []).at(-1);
+  return !u || Math.round((Date.parse(HOJE) - Date.parse(u.d)) / 864e5) > 45;
+}).map(i => i.id);
 
 function processarCotacoes(resp) {
   const ids = IDS_BUSCA();
@@ -413,14 +423,14 @@ execucao.etapas.push(await etapaBCB());
 const manual = etapaManual();
 if (manual) execucao.etapas.push(manual);
 
-// A busca web roda às segundas e quando a atualização é pedida à mão. Nos outros dias
-// só as APIs oficiais rodam, que são gratuitas.
-// A cadência é semanal, mas não presa ao dia da semana: o GitHub atrasa o agendamento,
-// e uma execução que escorrega para domingo ou terça não pode pular a busca da semana.
+// A busca web é a única etapa que custa dinheiro, e por isso está desligada por padrão:
+// a coleta automática roda só EIA e Banco Central, que são gratuitas. A busca acontece
+// quando a atualização é pedida à mão, ou se PAINEL_BUSCA=auto restaurar a cadência semanal.
 const historico = await lerJson('execucoes.json', { execucoes: [] });
 const ultimaBusca = historico.execucoes.find(e => e.etapas?.some(t => ['cotacoes', 'briefing'].includes(t.etapa)));
 const DIAS_SEM_BUSCA = ultimaBusca ? Math.round((Date.parse(HOJE) - Date.parse(ultimaBusca.data)) / 864e5) : 999;
-const TOCA_BUSCAR = DIAS_SEM_BUSCA >= 6;
+const BUSCA_AUTOMATICA = (process.env.PAINEL_BUSCA || 'off').trim() === 'auto';
+const TOCA_BUSCAR = BUSCA_AUTOMATICA && DIAS_SEM_BUSCA >= 6;
 const FORCAR = ARG.has('--buscar') || process.env.PAINEL_FORCAR_BUSCA === '1';
 const pendente = await lerJson('lote-pendente.json', null);
 
@@ -439,7 +449,10 @@ if (ARG.has('--sem-ia') || !process.env.ANTHROPIC_API_KEY) {
     execucao.etapas.push(await processarBriefing(r.briefing));
   }
 } else if (!TOCA_BUSCAR && !FORCAR) {
-  execucao.etapas.push({ etapa: 'busca', status: 'pulado', itens: 0, detalhe: [`busca feita há ${DIAS_SEM_BUSCA} dias; a cadência é semanal, use o botão Atualizar agora para antecipar`] });
+  const motivo = BUSCA_AUTOMATICA
+    ? `busca feita há ${DIAS_SEM_BUSCA} dias; a cadência automática é semanal`
+    : `busca automática desligada para não gerar custo; última há ${DIAS_SEM_BUSCA} dias. Use o botão Atualizar agora, ou a variável PAINEL_BUSCA=auto para voltar ao semanal`;
+  execucao.etapas.push({ etapa: 'busca', status: 'pulado', itens: 0, detalhe: [motivo] });
 } else {
   const ids = IDS_BUSCA();
   const pedidos = {

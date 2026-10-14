@@ -10,7 +10,7 @@ on:
         required: false
         default: ''
       sem_ia:
-        description: 'Coletar só EIA e Banco Central, sem busca web (sem custo de API)'
+        description: 'Coletar só EIA e Banco Central, sem busca web (o agendamento já faz isso)'
         type: boolean
         default: false
       modelo:
@@ -48,8 +48,10 @@ jobs:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           PAINEL_MODELO: ${{ (github.event.inputs.modelo != '' && github.event.inputs.modelo != 'padrão') && github.event.inputs.modelo || vars.PAINEL_MODELO }}
+          # 'off' (padrão): a execução agendada não busca na web e não gera custo; 'auto' devolve a busca semanal
+          PAINEL_BUSCA: ${{ vars.PAINEL_BUSCA }}
           PAINEL_LANCAMENTOS: ${{ github.event.inputs.lancamentos }}
-          # execução pedida à mão busca na web em qualquer dia; a automática só às segundas
+          # execução pedida à mão sempre busca; a agendada só se PAINEL_BUSCA=auto
           PAINEL_FORCAR_BUSCA: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: node scripts/atualizar.mjs ${{ github.event.inputs.sem_ia == 'true' && '--sem-ia' || '' }}
       - name: Gravar no repositório
