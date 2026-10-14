@@ -476,7 +476,9 @@ function avaliarCond(c, dia) {
   }
   const ids = c.ind.split('|');
   let p = null, id = ids[0];
-  for (const cand of ids) { const q = valorEm(cand, dia); if (q && difDias(dia, q.d) <= 30) { p = q; id = cand; break; } }
+  // indicador mensal continua valendo por mais tempo; diário ou semanal vence rápido
+  const validade = cand => PORID[cand]?.cadencia === 'semanal' ? 120 : 30;
+  for (const cand of ids) { const q = valorEm(cand, dia); if (q && difDias(dia, q.d) <= validade(cand)) { p = q; id = cand; break; } }
   const item = PORID[id];
   const ok = !!p && (c.op === '<' ? p.v < c.v : c.op === '>' ? p.v > c.v : c.op === '<=' ? p.v <= c.v : c.op === '>=' ? p.v >= c.v : p.v === c.v);
   return { ok, txt: `${item?.nome || id} ${c.op} ${fmt(c.v)} ${item?.unidade || ''} (${p ? 'agora ' + fmt(p.v) + ' em ' + dataBr(p.d) : 'sem dado recente'})` };

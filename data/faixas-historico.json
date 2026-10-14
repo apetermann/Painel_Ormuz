@@ -69,6 +69,16 @@
     "dispdiesel",
     "expdiesel"
    ]
+  },
+  {
+   "vigente_desde": "2026-10-14",
+   "origem": "Números primários do IEA Oil Market Report de outubro de 2026: Ormuz passa a ser medido em volume, exportação global vira nível e o crack europeu tem a escala ampliada para 120",
+   "ids": [
+    "fluxoormuz",
+    "expmeru",
+    "expdiesel",
+    "crack"
+   ]
   }
  ]
 }

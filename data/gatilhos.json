@@ -59,13 +59,13 @@
      "v": 81.5
     },
     {
-     "ind": "dispdiesel",
+     "ind": "expdiesel",
      "op": "<",
-     "v": -1
+     "v": 4.8
     }
    ],
    "dias": 0,
-   "acao": "Proposto nesta versão: refino global abaixo da mínima sazonal projetada pela IEA com disponibilidade mais de 1 mi b/d abaixo do ano anterior. Antecipar compra de combustível e fixar frete antes do inverno do hemisfério norte."
+   "acao": "Refino global abaixo da mínima sazonal projetada pela IEA com exportação global abaixo de 4,8 mi b/d. A IEA não espera reposição de estoque antes do segundo semestre de 2027: antecipar compra de combustível e fixar frete."
   },
   {
    "id": "distribuicao",
@@ -80,7 +80,7 @@
     {
      "ind": "expdiesel",
      "op": "<",
-     "v": -500
+     "v": 4.8
     }
    ],
    "dias": 0,
@@ -135,6 +135,20 @@
    ],
    "dias": 0,
    "acao": "Proposto nesta versão: importação em queda forte com refino nacional abaixo de 85%. Confirmar contratos com distribuidora e antecipar compra."
+  },
+  {
+   "id": "ormuzvolume",
+   "nome": "Ormuz abaixo de metade do normal",
+   "novo": true,
+   "conds": [
+    {
+     "ind": "fluxoormuz",
+     "op": "<",
+     "v": 10
+    }
+   ],
+   "dias": 0,
+   "acao": "Proposto nesta versão: fluxo abaixo de 10 mi b/d, menos da metade do normal pré-guerra. Revisar premissas de prazo de entrega e de custo de frete para insumo importado."
   },
   {
    "id": "desescalada",
