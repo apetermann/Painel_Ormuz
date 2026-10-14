@@ -55,6 +55,20 @@
     "distara",
     "opepociosa"
    ]
+  },
+  {
+   "vigente_desde": "2026-10-14",
+   "origem": "Reorganização em torno da cadeia do diesel; refinomundo ganha faixa calibrada pela IEA de outubro; indicadores de cru, fertilizante e biomassa passam a contexto, fora do índice",
+   "ids": [
+    "refinomundo",
+    "prodestilado",
+    "refinomedio",
+    "refinochina",
+    "refinoindia",
+    "refinoeuropa",
+    "dispdiesel",
+    "expdiesel"
+   ]
   }
  ]
 }

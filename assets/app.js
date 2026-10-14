@@ -361,7 +361,8 @@ const PONTOS_NIVEL = { ok: 0, atencao: 50, alerta: 100 };
 function indice(dia) {
   let soma = 0, pesos = 0, al = 0, at = 0, ok = 0, fora = 0;
   for (const i of TODOS) {
-    if (i.dir === 'acompanhamento') continue;
+    // 'contexto' é indicador que segue sendo coletado mas não compõe o índice, que é de diesel
+    if (i.dir === 'acompanhamento' || i.contexto) continue;
     const p = dia ? valorEm(i.id, dia) : ultimo(i.id);
     const n = nivel(i, p?.v);
     if (n === 'vazio') { fora++; continue; }

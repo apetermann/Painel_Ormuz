@@ -132,6 +132,7 @@ async function etapaEIA() {
     refinoeua: async () => (await eia('PET.WPULEUS3.W', INICIO_HIST)).map(p => ({ d: p.d, v: p.v })),
     demdistdesvio: async () => desvio5anos(mediaMovel(await eia('PET.WDIUPUS2.W', INICIO_BASE), 4)),
     henryhub: async () => (await eia('NG.RNGWHHD.D', INICIO_HIST)).map(p => ({ d: p.d, v: p.v })),
+    prodestilado: async () => (await eia('PET.WDIRPUS2.W', INICIO_HIST)).map(p => ({ d: p.d, v: p.v })),
   };
   for (const [id, fn] of Object.entries(passos)) {
     try {

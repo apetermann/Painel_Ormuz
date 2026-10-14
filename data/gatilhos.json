@@ -49,6 +49,44 @@
    "acao": "Fixar contratos de frete, antecipar compra de combustível e revisar premissas do orçamento até fevereiro."
   },
   {
+   "id": "ofertadiesel",
+   "nome": "Oferta mundial de diesel abaixo do piso",
+   "novo": true,
+   "conds": [
+    {
+     "ind": "refinomundo",
+     "op": "<",
+     "v": 81.5
+    },
+    {
+     "ind": "dispdiesel",
+     "op": "<",
+     "v": -1
+    }
+   ],
+   "dias": 0,
+   "acao": "Proposto nesta versão: refino global abaixo da mínima sazonal projetada pela IEA com disponibilidade mais de 1 mi b/d abaixo do ano anterior. Antecipar compra de combustível e fixar frete antes do inverno do hemisfério norte."
+  },
+  {
+   "id": "distribuicao",
+   "nome": "Produto preso na origem",
+   "novo": true,
+   "conds": [
+    {
+     "ind": "refinomundo",
+     "op": ">",
+     "v": 83
+    },
+    {
+     "ind": "expdiesel",
+     "op": "<",
+     "v": -500
+    }
+   ],
+   "dias": 0,
+   "acao": "Proposto nesta versão: o mundo produz, mas o diesel não circula, por cota de exportação, consumo interno ou falta de navio. O gargalo deixa de ser refino e passa a ser logística: revisar premissas de frete, não de produção."
+  },
+  {
    "id": "divergencia",
    "nome": "Divergência entre cru e derivado",
    "conds": [
