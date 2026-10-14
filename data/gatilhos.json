@@ -105,19 +105,6 @@
    "acao": "Pior arranjo para o Brasil: tira a justificativa política do imposto de exportação enquanto o diesel sobe. Revisar repasse."
   },
   {
-   "id": "exaustao",
-   "nome": "Exaustão de estoque",
-   "conds": [
-    {
-     "ind": "coberturadiesel",
-     "op": "<",
-     "v": 25
-    }
-   ],
-   "dias": 0,
-   "acao": "Antecipar compras. Abaixo de 25 dias o consumo de estoque historicamente vira pico de preço."
-  },
-  {
    "id": "faltabrasil",
    "nome": "Risco de falta regional de diesel no Brasil",
    "novo": true,
@@ -155,99 +142,13 @@
    "nome": "Desescalada real em Ormuz",
    "conds": [
     {
-     "ind": "seguro",
-     "op": "<",
-     "v": 2
-    },
-    {
-     "ind": "travessias",
+     "ind": "fluxoormuz",
      "op": ">",
-     "v": 40
+     "v": 16
     }
    ],
    "dias": 21,
-   "acao": "Reduzir hedge e revisar premissas para baixo. Resolve o cru, não resolve o diesel."
-  },
-  {
-   "id": "biomassa",
-   "nome": "Biomassa para vapor",
-   "conds": [
-    {
-     "ind": "newcastle",
-     "op": ">",
-     "v": 150
-    }
-   ],
-   "dias": 0,
-   "acao": "Acelerar a conversão de potencial condicionado em contrato: o carvão térmico passa do nível em que a substituição se paga."
-  },
-  {
-   "id": "aperto_europa",
-   "nome": "Aperto de destilado confirmado nos dois lados do Atlântico",
-   "novo": true,
-   "conds": [
-    {
-     "ind": "distdesvio",
-     "op": "<",
-     "v": -10
-    },
-    {
-     "ind": "distara",
-     "op": "<",
-     "v": 1800
-    }
-   ],
-   "dias": 0,
-   "acao": "Proposto nesta versão: aperto simultâneo nos EUA e na Europa afasta a explicação por logística e confirma oferta física. Antecipar compra de combustível."
-  },
-  {
-   "id": "gasfertilizante",
-   "nome": "Custo de fertilizante pelo gás",
-   "novo": true,
-   "conds": [
-    {
-     "ind": "ttf",
-     "op": ">",
-     "v": 70
-    },
-    {
-     "ind": "enxofre",
-     "op": ">",
-     "v": 450
-    }
-   ],
-   "dias": 0,
-   "acao": "Proposto nesta versão: os dois canais de custo do fertilizante pressionados ao mesmo tempo. Avaliar antecipação da compra da safra."
-  },
-  {
-   "id": "safra",
-   "nome": "Safra comprometida",
-   "conds": [
-    {
-     "ind": "ureia",
-     "op": ">",
-     "v": 650
-    }
-   ],
-   "dias": 0,
-   "acao": "Entrando no quarto trimestre, avaliar antecipação parcial da compra de fertilizante."
-  },
-  {
-   "id": "excedente",
-   "nome": "Virada para excedente",
-   "conds": [
-    {
-     "ind": "venezuela",
-     "op": ">",
-     "v": 1.5
-    },
-    {
-     "marco": "opep",
-     "estado": "saida_confirmada"
-    }
-   ],
-   "dias": 0,
-   "acao": "Revisar a tese de paridade de preço: o risco passa a ser petróleo barato em 2027."
+   "acao": "Fluxo acima de 16 mi b/d, perto do normal pré-guerra, sustentado por três semanas. Reduzir hedge e revisar premissas para baixo. Resolve o cru; só resolve o diesel se a exportação de derivado acompanhar."
   },
   {
    "id": "janela",

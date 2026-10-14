@@ -1,0 +1,534 @@
+{
+ "_nota": "Indicadores e gatilhos aposentados na revisão de 14 de outubro de 2026, com série preservada. Para reativar, devolva a definição a indicadores.json, a série a leituras.json e o gatilho a gatilhos.json.",
+ "em": "2026-10-14",
+ "indicadores": [
+  {
+   "id": "refinomedio",
+   "nome": "Refino do Oriente Médio",
+   "dica": "Processamento, mensal",
+   "unidade": "mi b/d",
+   "dir": "baixa-ruim",
+   "t1": 9,
+   "t2": 8,
+   "min": 6,
+   "max": 12,
+   "confianca": "media",
+   "peso": 1.3,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "A IEA registra perda conjunta de 1,3 mi b/d de exportação de diesel da Rússia e do Oriente Médio em setembro. Jazan e outras instalações sauditas foram atacadas.",
+   "leitura": "Segunda fonte da perda de oferta, junto com a Rússia, e a que mais depende de Ormuz para escoar.",
+   "fonte": "IEA e JODI, via busca web",
+   "url": "https://www.jodidata.org/oil/",
+   "grupo_origem": "Produção mundial de diesel",
+   "motivo": "nunca coletado; a perda do Oriente Médio é medida por expmeru, que vem do mesmo relatório",
+   "serie": []
+  },
+  {
+   "id": "refinoindia",
+   "nome": "Refino da Índia",
+   "dica": "Processamento, mensal",
+   "unidade": "mi b/d",
+   "dir": "baixa-ruim",
+   "t1": 5.2,
+   "t2": 4.8,
+   "min": 4,
+   "max": 6.5,
+   "confianca": "media",
+   "peso": 1,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "Principal fornecedor marginal de diesel para a Europa desde o embargo russo.",
+   "leitura": "É o substituto de quem perdeu o diesel russo. Queda aqui fecha a última válvula de escape do Atlântico.",
+   "fonte": "PPAC, Ministério do Petróleo da Índia, via busca web",
+   "url": "https://ppac.gov.in/",
+   "grupo_origem": "Produção mundial de diesel",
+   "motivo": "nunca coletado em três tentativas de busca",
+   "serie": []
+  },
+  {
+   "id": "refinochina",
+   "nome": "Refino da China",
+   "dica": "Processamento, mensal",
+   "unidade": "mi b/d",
+   "dir": "baixa-ruim",
+   "t1": 14.5,
+   "t2": 13.5,
+   "min": 11,
+   "max": 17,
+   "confianca": "media",
+   "peso": 1,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "Maior parque de refino do mundo. A política de cotas de exportação define quanto do diesel chega ao mercado internacional.",
+   "leitura": "Processar muito não basta: a China pode reter o produto. Leia junto com as cotas de exportação, que aparecem no briefing.",
+   "fonte": "NBS da China, via busca web",
+   "url": "https://www.stats.gov.cn/english/",
+   "grupo_origem": "Produção mundial de diesel",
+   "motivo": "nunca coletado em três tentativas de busca",
+   "serie": []
+  },
+  {
+   "id": "refinoeuropa",
+   "nome": "Refino da Europa",
+   "dica": "Processamento da OCDE Europa, mensal",
+   "unidade": "mi b/d",
+   "dir": "baixa-ruim",
+   "t1": 10.5,
+   "t2": 9.5,
+   "min": 8,
+   "max": 13,
+   "confianca": "media",
+   "peso": 1.2,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "Cerca de 30 refinarias fecharam na União Europeia entre 2009 e 2024. A IEA registra margens europeias comprimidas por cru e frete caros em outubro de 2026.",
+   "leitura": "Capacidade que fechou não reabre. Margem comprimida com utilização alta indica problema de custo de insumo, não falta de demanda.",
+   "fonte": "IEA Oil Market Report, via busca web",
+   "url": "https://www.iea.org/topics/oil-market-report",
+   "grupo_origem": "Produção mundial de diesel",
+   "motivo": "nunca coletado; o aperto europeu aparece no crack e nas exportações globais",
+   "serie": []
+  },
+  {
+   "id": "distara",
+   "nome": "Estoques de destilados em ARA",
+   "dica": "Amsterdã, Roterdã e Antuérpia, semanal",
+   "unidade": "mil t",
+   "dir": "baixa-ruim",
+   "t1": 2200,
+   "t2": 1800,
+   "min": 800,
+   "max": 3500,
+   "confianca": "baixa",
+   "peso": 1,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "Série nova. O painel media o aperto de destilado só nos EUA.",
+   "leitura": "Checagem cruzada da afirmação central: se o aperto americano não aparecer na Europa, o problema é logística e arbitragem, não oferta física de refino.",
+   "fonte": "Insights Global, via busca web",
+   "url": "https://www.insights-global.com/",
+   "grupo_origem": "Estoques, o colchão entre produção e consumo",
+   "motivo": "nunca coletado; estoque europeu de destilado sem fonte pública confiável",
+   "serie": []
+  },
+  {
+   "id": "coberturadiesel",
+   "nome": "Cobertura de diesel da OCDE",
+   "dica": "Dias de demanda em estoque",
+   "unidade": "dias",
+   "dir": "baixa-ruim",
+   "t1": 27,
+   "t2": 22,
+   "min": 15,
+   "max": 35,
+   "confianca": "baixa",
+   "peso": 1.2,
+   "origem": "ia",
+   "ref": "Cerca de 27 dias em maio. Abaixo de 25 o consumo de estoque historicamente vira pico de preço; 20 é o nível crítico. Número de fonte única e sem atualização recente confirmada.",
+   "leitura": "Estoques governamentais da OCDE no menor nível desde dezembro de 1990.",
+   "fonte": "IEA Oil Market Report",
+   "url": "https://www.iea.org/topics/oil-market-report",
+   "cadencia": "semanal",
+   "grupo_origem": "Estoques, o colchão entre produção e consumo",
+   "motivo": "fonte única, sem atualização desde 31 de maio",
+   "serie": [
+    {
+     "d": "2026-05-31",
+     "v": 27,
+     "f": "doc"
+    }
+   ]
+  },
+  {
+   "id": "travessias",
+   "nome": "Travessias diárias em Ormuz",
+   "dica": "Série PortWatch, base 85 por dia",
+   "unidade": "por dia",
+   "dir": "baixa-ruim",
+   "t1": 60,
+   "t2": 20,
+   "min": 0,
+   "max": 100,
+   "confianca": "baixa",
+   "peso": 0,
+   "origem": "ia",
+   "ref": "3 travessias em 23 de agosto pelo PortWatch, contra base pré-crise de 85 por dia. O TankerMap reportava cerca de 21 por dia no mesmo período, e outros monitores contam embarcações dentro da zona, não travessias.",
+   "leitura": "Virou contexto: a medida principal do estreito passou a ser o volume, em mi b/d, da série fluxoormuz. A contagem continua por servir de checagem, lembrando que qualquer contagem é piso, porque parte da frota navega com AIS desligado.",
+   "fonte": "IMF PortWatch",
+   "url": "https://portwatch.imf.org/",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "substituído por fluxoormuz, que mede volume em vez de contagem de navios",
+   "serie": [
+    {
+     "d": "2026-08-23",
+     "v": 3,
+     "f": "doc"
+    }
+   ]
+  },
+  {
+   "id": "babmandeb",
+   "nome": "Travessias em Bab el-Mandeb",
+   "dica": "Rota alternativa para a Ásia",
+   "unidade": "navios",
+   "dir": "baixa-ruim",
+   "t1": 40,
+   "t2": 25,
+   "min": 0,
+   "max": 60,
+   "confianca": "baixa",
+   "peso": 0,
+   "origem": "ia",
+   "ref": "29 embarcações em 21 de julho, contra 41 no dia anterior. Houthis declararam bloqueio no fim de julho e atacaram instalação de refino saudita em agosto.",
+   "leitura": "Se fechar junto com Ormuz, não há rota substituta.",
+   "fonte": "S&P Global e PortWatch",
+   "url": "https://www.spglobal.com/energy/en/news-research/latest-news/shipping",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "sem atualização desde 21 de julho; rota alternativa, não a principal",
+   "serie": [
+    {
+     "d": "2026-07-20",
+     "v": 41,
+     "f": "doc"
+    },
+    {
+     "d": "2026-07-21",
+     "v": 29,
+     "f": "doc"
+    }
+   ]
+  },
+  {
+   "id": "seguroporto",
+   "nome": "Seguro para atracação em portos do Golfo",
+   "dica": "Kuwait e Bahrein, % do valor do casco",
+   "unidade": "%",
+   "dir": "alta-ruim",
+   "t1": 2,
+   "t2": 6,
+   "min": 0,
+   "max": 15,
+   "confianca": "baixa",
+   "peso": 0,
+   "origem": "ia",
+   "ref": "Indicador criado em 8 de setembro de 2026, sem série histórica. A Guarda Revolucionária ameaçou atacar petroleiros atracados ou fundeados em portos do Kuwait e do Bahrein.",
+   "leitura": "Substitui travessias em Ormuz como principal indicador antecedente de ruptura sistêmica. Seguradora reprecifica antes do evento, não depois.",
+   "fonte": "Corretoras de seguro marítimo, via S&P",
+   "url": "https://www.spglobal.com/energy/en/news-research/latest-news/shipping",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "nunca coletado",
+   "serie": []
+  },
+  {
+   "id": "td3c",
+   "nome": "Frete VLCC Golfo Pérsico para Ásia",
+   "dica": "Rota TD3C, em Worldscale",
+   "unidade": "WS",
+   "dir": "alta-ruim",
+   "t1": 80,
+   "t2": 150,
+   "min": 20,
+   "max": 300,
+   "confianca": "media",
+   "peso": 0,
+   "origem": "ia",
+   "ref": "Referência diária do Baltic Exchange e base dos derivativos de frete em ICE e CME.",
+   "leitura": "Mede navio de cru, não de derivado, então serve de contexto de frete, não de custo de distribuição do diesel. Sobe quando o armador recusa a travessia mesmo com cobertura disponível.",
+   "fonte": "Baltic Exchange",
+   "url": "https://www.balticexchange.com/",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "mede frete de navio de cru, não de derivado",
+   "serie": []
+  },
+  {
+   "id": "venezuela",
+   "nome": "Produção da Venezuela",
+   "dica": "Meta do acordo com os EUA acima de 1,5",
+   "unidade": "mi b/d",
+   "dir": "dois-lados",
+   "t1": 1.2,
+   "t2": 1.6,
+   "e1": 1,
+   "e2": 2,
+   "min": 0.8,
+   "max": 2.2,
+   "confianca": "media",
+   "peso": 0,
+   "origem": "ia",
+   "ref": "Cerca de 1,23 milhão de b/d no fim de agosto, patamar sustentado há aproximadamente 240 dias. O acordo de 28 de agosto mira mais de 1,5 milhão, com horizonte de 25 anos.",
+   "leitura": "Abaixo de 1,2 a oferta segue curta e a promessa não se materializou. Acima de 1,6 o mercado gira para excedente, junto com a capacidade do Golfo voltando e os Emirados sem cota.",
+   "fonte": "Reuters e OPEP",
+   "url": "https://www.reuters.com/business/energy/",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "oferta de cru, fora da tese do diesel",
+   "serie": [
+    {
+     "d": "2026-08-31",
+     "v": 1.23,
+     "f": "doc"
+    },
+    {
+     "d": "2026-09-01",
+     "v": 1.5,
+     "f": "ia"
+    }
+   ]
+  },
+  {
+   "id": "opepociosa",
+   "nome": "Capacidade ociosa da OPEP+",
+   "dica": "Colchão de oferta disponível, mensal",
+   "unidade": "mi b/d",
+   "dir": "dois-lados",
+   "t1": 2,
+   "t2": 4,
+   "e1": 1,
+   "e2": 5.5,
+   "min": 0,
+   "max": 7,
+   "confianca": "media",
+   "peso": 0,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "Sem valor de referência no documento, que registra a saída dos Emirados em 1º de maio levando parte relevante da capacidade ociosa.",
+   "leitura": "Mede os dois riscos de uma vez: colchão fino significa que qualquer interrupção vira pico de preço; colchão grosso demais antecipa o excedente de 2027, que é o cenário difícil para uma tese de substituição por paridade de preço.",
+   "fonte": "IEA e EIA STEO, via busca web",
+   "url": "https://www.eia.gov/outlooks/steo/",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "nunca coletado; oferta de cru, fora da tese do diesel",
+   "serie": []
+  },
+  {
+   "id": "ttf",
+   "nome": "Gás natural na Europa, TTF",
+   "dica": "Contrato de referência, mensal à frente",
+   "unidade": "€/MWh",
+   "dir": "alta-ruim",
+   "t1": 40,
+   "t2": 70,
+   "min": 10,
+   "max": 150,
+   "confianca": "media",
+   "peso": 0,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "Sem valor de referência no documento. O gás responde por 60% a 80% do custo dos nitrogenados.",
+   "leitura": "É o driver da ureia, que o painel media sem medir a causa. Alta aqui antecipa alta de fertilizante mesmo com frete estável, e pressiona a Europa no inverno junto com o destilado.",
+   "fonte": "ICE Endex, via busca web",
+   "url": "https://www.theice.com/products/27996665/Dutch-TTF-Gas-Futures",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "nunca coletado; custo de fertilizante, outra tese",
+   "serie": []
+  },
+  {
+   "id": "enxofre",
+   "nome": "Enxofre posto no Brasil",
+   "dica": "CFR, insumo de fosfatados",
+   "unidade": "US$/t",
+   "dir": "alta-ruim",
+   "t1": 300,
+   "t2": 450,
+   "min": 50,
+   "max": 800,
+   "confianca": "media",
+   "peso": 0,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "provisoria": true,
+   "ref": "O documento registra enxofre em nível recorde na compra da safra 2026/27. Ormuz concentra cerca de metade das exportações globais.",
+   "leitura": "Canal de custo de fertilizante independente da ureia, e mais exposto a Ormuz que ela. Serve para separar aperto de nitrogenado de aperto de fosfatado.",
+   "fonte": "Acerto Limited e Argus, via busca web",
+   "url": "https://www.argusmedia.com/en/fertilizer/argus-sulphur",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "nunca coletado; custo de fertilizante, outra tese",
+   "serie": []
+  },
+  {
+   "id": "ureia",
+   "nome": "Ureia posta no Brasil",
+   "dica": "CFR, principal fonte de nitrogênio",
+   "unidade": "US$/t",
+   "dir": "alta-ruim",
+   "t1": 500,
+   "t2": 650,
+   "min": 300,
+   "max": 850,
+   "confianca": "media",
+   "peso": 0,
+   "origem": "ia",
+   "ref": "Média de importação de 491,7 por tonelada em março, maior valor mensal desde dezembro de 2022. Chegou perto de 800 em abril e recuou depois.",
+   "leitura": "O canal principal é gás natural, que responde por 60% a 80% do custo de nitrogenados, não frete. Ormuz concentra mais de 40% das exportações globais de ureia e cerca de metade do enxofre.",
+   "fonte": "Farmnews",
+   "url": "https://www.farmnews.com.br/",
+   "cadencia": "semanal",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "sem atualização desde 31 de março; custo de fertilizante, outra tese",
+   "serie": [
+    {
+     "d": "2026-03-31",
+     "v": 491.7,
+     "f": "doc"
+    }
+   ]
+  },
+  {
+   "id": "newcastle",
+   "nome": "Carvão térmico Newcastle 6.000 kcal",
+   "dica": "FOB Austrália, referência de vapor",
+   "unidade": "US$/t",
+   "dir": "acompanhamento",
+   "min": 60,
+   "max": 300,
+   "confianca": "media",
+   "peso": 0,
+   "origem": "ia",
+   "cadencia": "semanal",
+   "ref": "Listado no documento como indicador a acrescentar. Existe gatilho declarado acima de US$ 150 por tonelada.",
+   "leitura": "Sem faixa de alerta de propósito: carvão caro não é risco para esta empresa, é oportunidade, e entra no painel só para tornar avaliável o gatilho de biomassa para vapor. Por isso fica fora do índice de tensão.",
+   "fonte": "GlobalCOAL e IHS, via busca web",
+   "url": "https://www.globalcoal.com/",
+   "contexto": true,
+   "grupo_origem": "Contexto, fora do índice",
+   "motivo": "nunca coletado; biomassa para vapor, outra tese",
+   "serie": []
+  }
+ ],
+ "gatilhos": [
+  {
+   "id": "exaustao",
+   "nome": "Exaustão de estoque",
+   "conds": [
+    {
+     "ind": "coberturadiesel",
+     "op": "<",
+     "v": 25
+    }
+   ],
+   "dias": 0,
+   "acao": "Antecipar compras. Abaixo de 25 dias o consumo de estoque historicamente vira pico de preço.",
+   "motivo": "depende de indicador aposentado: coberturadiesel"
+  },
+  {
+   "id": "desescalada",
+   "nome": "Desescalada real em Ormuz",
+   "conds": [
+    {
+     "ind": "seguro",
+     "op": "<",
+     "v": 2
+    },
+    {
+     "ind": "travessias",
+     "op": ">",
+     "v": 40
+    }
+   ],
+   "dias": 21,
+   "acao": "Reduzir hedge e revisar premissas para baixo. Resolve o cru, não resolve o diesel.",
+   "motivo": "depende de indicador aposentado: travessias"
+  },
+  {
+   "id": "biomassa",
+   "nome": "Biomassa para vapor",
+   "conds": [
+    {
+     "ind": "newcastle",
+     "op": ">",
+     "v": 150
+    }
+   ],
+   "dias": 0,
+   "acao": "Acelerar a conversão de potencial condicionado em contrato: o carvão térmico passa do nível em que a substituição se paga.",
+   "motivo": "depende de indicador aposentado: newcastle"
+  },
+  {
+   "id": "aperto_europa",
+   "nome": "Aperto de destilado confirmado nos dois lados do Atlântico",
+   "novo": true,
+   "conds": [
+    {
+     "ind": "distdesvio",
+     "op": "<",
+     "v": -10
+    },
+    {
+     "ind": "distara",
+     "op": "<",
+     "v": 1800
+    }
+   ],
+   "dias": 0,
+   "acao": "Proposto nesta versão: aperto simultâneo nos EUA e na Europa afasta a explicação por logística e confirma oferta física. Antecipar compra de combustível.",
+   "motivo": "depende de indicador aposentado: distara"
+  },
+  {
+   "id": "gasfertilizante",
+   "nome": "Custo de fertilizante pelo gás",
+   "novo": true,
+   "conds": [
+    {
+     "ind": "ttf",
+     "op": ">",
+     "v": 70
+    },
+    {
+     "ind": "enxofre",
+     "op": ">",
+     "v": 450
+    }
+   ],
+   "dias": 0,
+   "acao": "Proposto nesta versão: os dois canais de custo do fertilizante pressionados ao mesmo tempo. Avaliar antecipação da compra da safra.",
+   "motivo": "depende de indicador aposentado: ttf, enxofre"
+  },
+  {
+   "id": "safra",
+   "nome": "Safra comprometida",
+   "conds": [
+    {
+     "ind": "ureia",
+     "op": ">",
+     "v": 650
+    }
+   ],
+   "dias": 0,
+   "acao": "Entrando no quarto trimestre, avaliar antecipação parcial da compra de fertilizante.",
+   "motivo": "depende de indicador aposentado: ureia"
+  },
+  {
+   "id": "excedente",
+   "nome": "Virada para excedente",
+   "conds": [
+    {
+     "ind": "venezuela",
+     "op": ">",
+     "v": 1.5
+    },
+    {
+     "marco": "opep",
+     "estado": "saida_confirmada"
+    }
+   ],
+   "dias": 0,
+   "acao": "Revisar a tese de paridade de preço: o risco passa a ser petróleo barato em 2027.",
+   "motivo": "depende de indicador aposentado: venezuela"
+  }
+ ]
+}

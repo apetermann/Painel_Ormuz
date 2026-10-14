@@ -32,6 +32,7 @@ GitHub Actions (19h)  ──►  scripts/atualizar.mjs  ──►  data/leituras
 | Lançar um valor à mão | *Actions → Atualizar painel → Run workflow* e preencha `lancamentos`, ex.: `diesel=6.52@2026-09-15; ureia=610` |
 | Atualizar um marco | Edite `estado`, `situacao` e `atualizado_em` em `data/marcos.json` |
 | Mudar faixa de alerta | Edite `data/indicadores.json` e registre a faixa anterior em `data/faixas-historico.json` |
+| Reativar indicador aposentado | Devolva a definição de `data/aposentados.json` para `indicadores.json`, a série para `leituras.json` e o gatilho para `gatilhos.json` |
 | Criar gatilho | Acrescente em `data/gatilhos.json`, condições por indicador ou marco, com persistência opcional em dias |
 | Comparar custo entre modelos | *Run workflow* e escolha o modelo no campo `modelo`; a aba **Coleta** mostra o modelo e os tokens de cada execução |
 | Levar séries para planilha | Botão **Baixar CSV** na página (separador `;`, decimal com vírgula) |
@@ -48,6 +49,7 @@ data/gatilhos.json           gatilhos avaliados na página
 data/eventos.json            eventos marcados nos gráficos
 data/briefings.json          varredura diária de notícias (gerado)
 data/execucoes.json          diagnóstico das coletas (gerado)
+data/aposentados.json        indicadores e gatilhos retirados, com série preservada
 scripts/atualizar.mjs        coleta
 docs/                        especificação e análise (só na cópia local, fora do Git)
 legacy/painel-ormuz.html     protótipo original, referência de comportamento

@@ -280,6 +280,8 @@ ${linhas.join('\n')}
 
 Para cada valor encontrado, inclua também a chave "<id>_data" com a data a que o número se refere (não a data da notícia), no formato "AAAA-MM-DD"; para dado mensal use o primeiro dia do mês de referência.
 
+Vários itens vêm do mesmo documento: o Oil Market Report da IEA, mensal. Procure a edição mais recente e extraia dali tudo o que ela cobrir, numa busca só, antes de procurar item por item.
+
 REGRAS DE SAÍDA, siga à risca:
 - Inclua APENAS as chaves cujo valor você realmente encontrou em fonte publicada. Omita as demais, não escreva null. Não estime nem interpole.
 - Valores são números puros, sem unidade, sem aspas, sem separador de milhar, ponto decimal. Percentuais como número (−12,5% vira -12.5).
