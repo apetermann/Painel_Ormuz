@@ -1,6 +1,44 @@
 {
  "execucoes": [
   {
+   "em": "2026-11-17T04:25:13.036Z",
+   "data": "2026-11-17",
+   "etapas": [
+    {
+     "etapa": "eia",
+     "status": "ok",
+     "itens": 9,
+     "detalhe": [
+      "brent: 472 pontos, 6 novos ou revisados, último 2026-11-11 = 92.14",
+      "crackny: 458 pontos, 6 novos ou revisados, último 2026-11-11 = 84.43",
+      "distdesvio: 97 pontos, 1 novos ou revisados, último 2026-11-06 = -8.2",
+      "crudesvio: 97 pontos, 1 novos ou revisados, último 2026-11-06 = -4.3",
+      "spr: 97 pontos, 1 novos ou revisados, último 2026-11-06 = 279.5",
+      "refinoeua: 97 pontos, 1 novos ou revisados, último 2026-11-06 = 95.2",
+      "demdistdesvio: 97 pontos, 1 novos ou revisados, último 2026-11-06 = -0.3",
+      "henryhub: 465 pontos, 6 novos ou revisados, último 2026-11-11 = 3",
+      "prodestilado: 97 pontos, 1 novos ou revisados, último 2026-11-06 = 5091"
+     ]
+    },
+    {
+     "etapa": "bcb",
+     "status": "ok",
+     "itens": 1,
+     "detalhe": [
+      "cambio: 470 pontos, 5 novos, último 2026-11-16 = 5.7324"
+     ]
+    },
+    {
+     "etapa": "busca",
+     "status": "pulado",
+     "itens": 0,
+     "detalhe": [
+      "busca automática desligada para não gerar custo; última há 36 dias. Use o botão Atualizar agora, ou a variável PAINEL_BUSCA=auto para voltar ao semanal"
+     ]
+    }
+   ]
+  },
+  {
    "em": "2026-11-10T04:02:08.349Z",
    "data": "2026-11-10",
    "etapas": [
